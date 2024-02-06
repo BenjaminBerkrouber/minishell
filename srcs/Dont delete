@@ -1,0 +1,11 @@
+[command] [option] [arg] [option]
+cat -e Makefile -e
+
+Attention
+
+< |
+> |
+|
+"
+'
+| lol

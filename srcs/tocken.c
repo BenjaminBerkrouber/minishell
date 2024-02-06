@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 08:24:17 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/06 16:55:05 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/06 19:00:50 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,28 +128,21 @@ char **ft_split_input(char *input)
             input++;
     }
     split_input[i] = NULL;
-    print_split_input(split_input);
     return (split_input);
 }
 
-char    **ft_women(char **split_input)
-{
-    char **split_clean;
 
-    split_clean = malloc(sizeof(char *) * 100);
-    print_split_input(split_input);
-    (void)split_clean;
-
-    return (split_input);
-}
 
 t_token *tokenize(char *input)
 {
-    char **split_input;
+    // char **split_input;
+    char *input_expend;
     
-    split_input = ft_split_input(input);
-    split_input = ft_women(split_input);
-    (void)split_input;
+    input_expend = ft_expand_envvar(input);
+    printf("%s\n", input_expend);
+    // split_input = ft_split_input(input_expend);
+    // split_input = ft_clean_input(split_input);
+    // print_split_input(split_input);
     return (NULL);
 }
 
