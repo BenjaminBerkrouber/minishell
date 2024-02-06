@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 08:23:41 by bberkrou          #+#    #+#             */
-/*   Updated: 2023/12/16 08:46:25 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/01/31 18:35:31 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,3 +55,11 @@ int is_command(char *token)
     free(path_copy);
     return 0;
 }
+
+// char *clean_cmd(char *cmd)
+// {
+//     char *clean_cmd;
+
+    
+//     return (clean_cmd);
+// }

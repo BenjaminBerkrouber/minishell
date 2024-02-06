@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 02:45:18 by bberkrou          #+#    #+#             */
-/*   Updated: 2023/12/16 10:36:43 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/01/31 19:40:01 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,14 @@
 #include <unistd.h>
 #include "three.h"
 
-int is_command(char *token);
 void libererTokens(t_token *tokens);
 t_token *creerToken(char *text, t_token_type type);
 t_token_type get_token_type(char *token);
-t_token *tokenize(const char *input);
+t_token *tokenize(char *input);
 const char *getTokenTypeName(t_token_type type);
+int is_command(char *token);
+int is_args(char *token);
+
+// echo $lol "$lol" '$lol' $"" $'' $""lol $''lol "'lol'" '"lol"' "'"lol"'" '"'lol'"'
 
 #endif

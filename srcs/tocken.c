@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 08:24:17 by bberkrou          #+#    #+#             */
-/*   Updated: 2023/12/16 10:41:59 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/06 16:55:05 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ t_token_type get_token_type(char *token)
 
     if (is_command(token))
         return TOKEN_COMMAND;
-
     return TOKEN_WORD;
 }
 
@@ -64,20 +63,10 @@ const char *skip_spaces(const char *input)
     return input;
 }
 
-int get_token_length(const char *input, int inQuotes)
-{
-    int length = 0;
-    while (*input && (inQuotes ? (*input != '\"') : (*input != ' ')))
-	{
-        length++;
-        input++;
-    }
-    return (length);
-}
-
 const char *create_and_add_token(t_token *tokens, int *tokenIndex, char *tokenStart, int length)
 {
-    char *newTokenStr;
+    char    *newTokenStr;
+    
     if (length > 0) {
         newTokenStr = strndup(tokenStart, length);
         tokens[*tokenIndex] = *creerToken(newTokenStr, get_token_type(newTokenStr));
@@ -87,36 +76,82 @@ const char *create_and_add_token(t_token *tokens, int *tokenIndex, char *tokenSt
     return tokenStart + length;
 }
 
-t_token *tokenize(const char *input)
+int get_token_length(char *input)
 {
-    t_token *tokens;
-    int tokenIndex = 0;
-    char *tokenStart;
-    int inQuotes;
     int length;
+    int in_quotes;
 
-    tokens = malloc(100 * sizeof(t_token));
-    if (tokens == NULL)
-        return NULL;
+    length = 0;
+    in_quotes = 0;
 
-    while (*input) {
-        inQuotes = 0;
-        input = skip_spaces(input);
-        tokenStart = (char *)input;
-        if (*input == '\"') {
-            inQuotes = 1;
-            tokenStart++;
-            input++;
-        }
-        length = get_token_length(input, inQuotes);
-        input = create_and_add_token(tokens, &tokenIndex, tokenStart, length);
-        if (inQuotes && *input) 
-            input++;
+    while (*input && ((*input != ' ') || (*input == ' ' && in_quotes)))
+    {
+        if (*input == '\"')
+            in_quotes = !in_quotes;
+        input++;
+        length++;
     }
-    tokens[tokenIndex].token = NULL;
-    return tokens;
+    return (length);
 }
 
+void print_split_input(char **split_input)
+{
+    int i;
+
+    i = 0;
+    while (split_input[i])
+    {
+        printf("[%s]\n", split_input[i]);
+        i++;
+    }
+}
+
+char **ft_split_input(char *input)
+{
+    char    **split_input;
+    int     lenght;
+    int     i;
+
+    i = 0;
+    lenght = 0;
+    split_input = malloc(sizeof(char *) * 100);
+    while (*input )
+    {
+        lenght = get_token_length(input);
+        input += lenght;
+        if (lenght > 0)
+        {
+            split_input[i] = strndup(input - lenght, lenght);
+            i++;
+        }
+        if (*input == ' ')
+            input++;
+    }
+    split_input[i] = NULL;
+    print_split_input(split_input);
+    return (split_input);
+}
+
+char    **ft_women(char **split_input)
+{
+    char **split_clean;
+
+    split_clean = malloc(sizeof(char *) * 100);
+    print_split_input(split_input);
+    (void)split_clean;
+
+    return (split_input);
+}
+
+t_token *tokenize(char *input)
+{
+    char **split_input;
+    
+    split_input = ft_split_input(input);
+    split_input = ft_women(split_input);
+    (void)split_input;
+    return (NULL);
+}
 
 const char *getTokenTypeName(t_token_type type)
 {
