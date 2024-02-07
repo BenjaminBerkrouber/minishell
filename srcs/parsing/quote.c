@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 16:55:49 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/06 18:13:43 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/07 13:13:25 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ void process_input_str(char *input, char **cleaned, int *index_cleaned, char *te
         handle_char(input[i], temp_str, &temp_len, current_quote);
         i++;
     }
-
     if (*current_quote == '\0' && temp_len > 0)
     {
         cleaned[*index_cleaned] = strdup(temp_str);
@@ -51,20 +50,51 @@ void process_input_str(char *input, char **cleaned, int *index_cleaned, char *te
     }
 }
 
+int check_quotes_closed(const char *input)
+{
+    char quote_type;
+    int i;
+    
+    quote_type = '\0';
+    i = 0;
+    while (input[i])
+    {
+        if (input[i] == '\'' || input[i] == '"')
+        {
+            if (quote_type == input[i])
+                quote_type = '\0';
+            else if (quote_type == '\0')
+                quote_type = input[i];
+        }
+        i++;
+    }
+    if (quote_type != '\0')
+    {
+        fprintf(stderr, "Syntaxe error : quaot %c not closed.\n", quote_type);
+        return 0;
+    }
+    return (1);
+}
+
 char **ft_clean_input(char **split_input)
 {
-    char **split_clean = malloc(sizeof(char *) * 100);
-    char *temp_str = malloc(sizeof(char) * 1024);
-    int index_cleaned = 0;
-    char current_quote = '\0';
-
-    int i = 0;
-    while (split_input[i] != NULL) {
+    int i;
+    int index_cleaned;
+    char current_quote;
+    char **split_clean;
+    char *temp_str;
+    
+    i = 0;
+    index_cleaned = 0;
+    current_quote = '\0';
+    split_clean = malloc(sizeof(char *) * 100);
+    temp_str = malloc(sizeof(char) * 1024);
+    while (split_input[i] != NULL)
+    {
         temp_str[0] = '\0';
         process_input_str(split_input[i], split_clean, &index_cleaned, temp_str, &current_quote);
         i++;
     }
-
     split_clean[index_cleaned] = NULL;
     free(temp_str);
     return split_clean;

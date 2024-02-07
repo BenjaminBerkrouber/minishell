@@ -6,24 +6,11 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 08:23:41 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/01/31 18:35:31 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/07 12:23:51 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void libererTokens(t_token	 *tokens)
-{
-	int i;
-
-	i = 0;
-    while (tokens[i].token != NULL)
-	{
-        free(tokens[i].token);
-		i++;
-    }
-    free(tokens);
-}
 
 int is_command(char *token)
 {
@@ -56,10 +43,9 @@ int is_command(char *token)
     return 0;
 }
 
-// char *clean_cmd(char *cmd)
-// {
-//     char *clean_cmd;
-
-    
-//     return (clean_cmd);
-// }
+const char *skip_spaces(const char *input)
+{
+    while (*input == ' ') 
+        input++;
+    return input;
+}

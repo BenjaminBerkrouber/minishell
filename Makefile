@@ -2,8 +2,8 @@ NAME = minishell
 CC = gcc
 CFLAGS = -g -Wall -Wextra -Werror -I.
 SRC_DIR = srcs/
-SRC = 	srcs/main.c srcs/utils.c srcs/tocken.c srcs/three.c srcs/ast.c \
-		srcs/export.c srcs/quote.c
+SRC = 	srcs/main.c srcs/utils.c \
+		srcs/parsing/parsing.c srcs/parsing/tocken.c srcs/parsing/export.c srcs/parsing/quote.c
 SRC_BONUS = 
 OBJ = $(SRC:.c=.o)
 OBJ_BONUS = $(SRC_BONUS:.c=.o)
