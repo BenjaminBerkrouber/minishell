@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 08:23:41 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/07 12:23:51 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/07 19:09:36 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,19 @@ const char *skip_spaces(const char *input)
     while (*input == ' ') 
         input++;
     return input;
+}
+
+int is_meta_char(char *c)
+{
+    if (strncmp(c, "|", 1) == 0)
+        return PIPE;
+    if (strncmp(c, "<", 1) == 0)
+        return REDIRECT_IN;
+    if (strncmp(c, ">", 1) == 0)
+        return REDIRECT_OUT;
+    if (strncmp(c, ">>", 2) == 0)
+        return REDIRECT_APPEND;
+    if (strncmp(c, "<<", 2) == 0)
+        return HERE_DOC;
+    return 0;
 }

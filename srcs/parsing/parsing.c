@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 02:48:01 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/07 13:11:06 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/07 18:20:48 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,26 +51,31 @@ char **ft_split_input(char *input)
     return (split_input);
 }
 
-t_token *tokenize(char *input)
+t_token *lexer(char *input)
 {
-	t_token *token;
-    char **split_input;
+    t_token *token_list;
     char *input_expend;
-
-	token = malloc(sizeof(t_token));
-	(void)input;
-	(void)split_input;
-	(void)token;
-    
-    input_expend = ft_expand_envvar(input);
-    split_input = ft_split_input(input_expend);
-	if (!split_input)
-	{
-		free(input_expend);
+    char **split_input;
+	int i;
+	
+	i = 0;
+	token_list = NULL;
+	input_expend = ft_expand_envvar(input);
+	(void)input_expend;
+	if (!input_expend)
 		return (NULL);
-	}
-	// token = get_token_type(split_input);
-    // split_input = ft_clean_input(split_input);
-    print_split_input(split_input);
-    return (NULL);
+	split_input = ft_split_input(input_expend);
+    free(input_expend);
+    if (!split_input)
+		return (NULL);
+	split_input = ft_clean_input(split_input);
+	if (!split_input)
+		return (NULL);
+	token_list = tokenize(split_input);
+	if (!token_list)
+		return (NULL);
+    while (split_input[i])
+        free(split_input[i++]);
+    free(split_input);
+	return (token_list);
 }

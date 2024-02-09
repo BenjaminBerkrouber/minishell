@@ -9,3 +9,29 @@ Attention
 "
 '
 | lol
+
+$? -> sortie d'erreur de la commande precedentes
+$ -> $
+"" -> "" Command
+'' -> '' Command
+$"" -> ""
+$'' -> ''
+export lol="<lol"
+$lol -> "<"lol ou "<lol"
+echo << lol -> lol delim
+
+<lol
+>lol
+<<lol
+>>lol
+
+ec << lol
+ec >> lol
+
+< <
+> >
+<< <<
+>> >>
+<> ><
+
+lol<Makefile
