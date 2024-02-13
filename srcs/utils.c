@@ -43,11 +43,10 @@ int is_command(char *token)
     return 0;
 }
 
-const char *skip_spaces(const char *input)
+void skip_spaces(char **input)
 {
-    while (*input == ' ') 
-        input++;
-    return input;
+    while (**input && **input == ' ')
+        (*input)++;
 }
 
 int is_meta_char(char *c)

@@ -30,13 +30,11 @@ static int	match_substring(const char *str, const char *to_find
 char	*ft_strnstr(const char *str, const char *to_find, size_t len)
 {
 	size_t	i;
-	size_t	str_len;
 	size_t	find_len;
 
 	if ((str == NULL || to_find == NULL) && len == 0)
 		return (NULL);
 	i = 0;
-	str_len = ft_strlen(str);
 	find_len = ft_strlen(to_find);
 	if (find_len == 0)
 		return ((char *)str);

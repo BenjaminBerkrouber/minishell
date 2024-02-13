@@ -1,0 +1,27 @@
+$? -> sortie d'erreur de la commande precedentes
+$ -> $
+
+
+[command] [option] [arg] [option]
+cat -e Makefile -e
+
+<lol
+>lol
+<<lol
+>>lol
+lol<Makefile
+< <
+> >
+<< <<
+>> >>
+<> ><
+< |
+> |
+| lol
+|
+ec << lol
+ec >> lol
+
+
+"
+'

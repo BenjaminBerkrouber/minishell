@@ -1,37 +1,40 @@
-[command] [option] [arg] [option]
-cat -e Makefile -e
-
 Attention
 
-< |
-> |
-|
-"
-'
-| lol
+// echo $lol "$lol" '$lol' $"" $'' $""lol $''lol "'lol'" '"lol"' "'"lol"'" '"'lol'"'
 
-$? -> sortie d'erreur de la commande precedentes
-$ -> $
 "" -> "" Command
 '' -> '' Command
 $"" -> ""
 $'' -> ''
+
 export lol="<lol"
 $lol -> "<"lol ou "<lol"
 echo << lol -> lol delim
 
-<lol
->lol
-<<lol
->>lol
 
-ec << lol
-ec >> lol
 
-< <
-> >
-<< <<
->> >>
-<> ><
+export TEST=coucou
+echo '"$TEST"'
+	-> "$TEST"
+echo "'$TEST'"
+	-> 'coucou'
+echo "test  $TEST  test"
+	-> test  coucou  test
+echo 'test  $TEST  test'
+	-> test  $TEST  test
+echo "'test  $TEST  test'"
+	-> 'test  coucou  test'
+echo '"test  $TEST  test"'
+	-> "test  $TEST  test"
+echo "$TEST  t  $TEST"
+	-> coucou  t  coucou
 
-lol<Makefile
+$$ = quoi
+
+export lol="echo <Makefile"
+$lol
+    -> <Makefile
+
+export lol="echo <Makefile"
+echo $lol
+    -> echo <Makefile

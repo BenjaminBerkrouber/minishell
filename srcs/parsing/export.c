@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+int last_exit_status = 5;
+
 /**
  * Extrait le nom de la variable d'environnement depuis une chaîne d'entrée à partir d'un indice donné.
  * 
@@ -55,7 +57,7 @@ static char *get_var_value(char *var_name)
     value = getenv(var_name);
     if (value)
         return (value);
-    return ("");
+    return (ft_strdup(""));
 }
 
 /**
@@ -84,6 +86,63 @@ static void handle_quotes(const char *input, t_expansion_params *params)
     }
 }
 
+int ft_nbrlen(int n)
+{
+    int len;
+
+    len = 0;
+    if (n <= 0)
+        len = 1;
+    while (n != 0)
+    {
+        len++;
+        n = n / 10;
+    }
+    return (len);
+}
+
+
+static void expand_exit_status(t_expansion_params *params)
+{
+    char    *exit_status_str;
+    char    *value;
+
+    exit_status_str = ft_itoa(last_exit_status);
+    if (!exit_status_str)
+        return;
+    value = exit_status_str;
+    while (*value)
+    {
+        (*params->result)[(*params->j)++] = *value++;
+    }
+    free(exit_status_str);
+
+    *params->i += 2; 
+}
+
+
+static void expand_env_variable(const char *input, t_expansion_params *params)
+{
+    char    *var_name;
+    char    *value;
+
+    var_name = extract_var_name(input, params->i);
+    if (!var_name)
+        return;
+    value = get_var_value(var_name);
+    while (*value)
+    {
+        (*params->result)[(*params->j)++] = *value++;
+    }
+    free(var_name);
+}
+
+static void add_char_to_result(t_expansion_params *params, char c)
+{
+    (*params->result)[(*params->j)++] = c;
+    (*params->i)++;
+}
+
 /**
  * Traite l'expansion des variables d'environnement dans une chaîne d'entrée, en remplaçant les noms de variables par leurs valeurs.
  * 
@@ -97,25 +156,27 @@ static void handle_quotes(const char *input, t_expansion_params *params)
  */
 static void handle_variable_expansion(const char *input, t_expansion_params *params)
 {
-    char *var_name;
-    char *value;
-    
     if (input[*params->i] == '$' && !*params->in_single_quote)
     {
-        var_name = extract_var_name(input, params->i);
-        if (!var_name)
-            return;
-        value = get_var_value(var_name);
-        while (*value)
-            (*params->result)[(*params->j)++] = *value++;
-        free(var_name);
+        if (input[*params->i + 1] == '?')
+        {
+            expand_exit_status(params);
+        }
+        else if (input[*params->i + 1] != ' ' && input[*params->i + 1] != '\0')
+        {
+            expand_env_variable(input, params);
+        }
+        else
+        {
+            add_char_to_result(params, input[*params->i]);
+        }
     }
     else
     {
-        (*params->result)[(*params->j)++] = input[*params->i];
-        (*params->i)++;
+        add_char_to_result(params, input[*params->i]);
     }
 }
+
 
 /**
  * Effectue l'expansion des variables d'environnement dans une chaîne d'entrée.

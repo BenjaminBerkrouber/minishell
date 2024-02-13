@@ -47,12 +47,14 @@ typedef struct s_token
 	struct s_token *next;
 } t_token;
 
+# include "ast.h"
 # include "parsing.h"
 
 t_token *lexer(char *input);
 char **ft_clean_input(char **split_input);
 char *ft_expand_envvar(const char *input);
 t_token *tokenize(char **split_input);
-// echo $lol "$lol" '$lol' $"" $'' $""lol $''lol "'lol'" '"lol"' "'"lol"'" '"'lol'"'
-
+void print_tokens(t_token *tokens);
+int is_token_redirection(token_type token);
+void    free_tokens(t_token *tokens);
 #endif

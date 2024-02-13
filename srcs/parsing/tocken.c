@@ -43,7 +43,7 @@ t_token *new_token(char *value, token_type type)
     return (new_token);
 }
 
-void add_tocken(t_token **token_list, t_token *new_token)
+void add_token(t_token **token_list, t_token *new_token)
 {
 	t_token *temp;
     if (!*token_list)
@@ -58,23 +58,22 @@ void add_tocken(t_token **token_list, t_token *new_token)
 
 token_type get_token_type(char *token, int is_first_token)
 {
-    if (is_first_token && !is_meta_char(token)) {
+    if (is_first_token && !is_meta_char(token))
         return CMD;
-    } else if (token[0] == '-') {
+    else if (token[0] == '-')
         return OPTION;
-    } else if (strncmp(token, "|", 1) == 0) {
+    else if (strcmp(token, "|") == 0)
         return PIPE;
-    } else if (strncmp(token, ">", 1) == 0) {
+    else if (strcmp(token, ">") == 0)
         return REDIRECT_OUT;
-    } else if (strncmp(token, "<", 1) == 0) {
+    else if (strcmp(token, "<") == 0)
         return REDIRECT_IN;
-    } else if (strncmp(token, ">>", 2) == 0) {
+    else if (strcmp(token, ">>") == 0)
         return REDIRECT_APPEND;
-    } else if (strncmp(token, "<<", 2) == 0) {
+    else if (strcmp(token, "<<") == 0)
         return HERE_DOC;
-    } else {
+    else
         return ARGUMENT;
-    }
 }
 
 t_token *tokenize(char **split_input)
@@ -87,41 +86,31 @@ t_token *tokenize(char **split_input)
 
     while (split_input[i])
     {
-        if (last_redirect_type == REDIRECT_IN)
+        type = get_token_type(split_input[i], is_first_token);
+        if (is_token_redirection(last_redirect_type))
         {
-            type = INFILE;
+            if (is_token_redirection(type))
+            {
+                printf("bash: erreur de syntaxe près du symbole inattendu « %s »\n", split_input[i]);    
+                free_tokens(token_list);
+                return NULL;
+            }
+            if (last_redirect_type == REDIRECT_IN)
+                type = INFILE;
+            else if (last_redirect_type == REDIRECT_OUT)
+                type = OUTFILE;
+            else if (last_redirect_type == REDIRECT_APPEND)
+                type = APPENDFILE;
+            else if (last_redirect_type == HERE_DOC)
+                type = DELIMITER;
             last_redirect_type = CMD;
         }
-        else if (last_redirect_type == REDIRECT_OUT || last_redirect_type == REDIRECT_APPEND)
-        {
-            type = OUTFILE;
-            last_redirect_type = CMD;
-        }
-        else if (last_redirect_type == HERE_DOC)
-        {
-            type = DELIMITER;
-            last_redirect_type = CMD;
-        }
-        else if (last_redirect_type == REDIRECT_APPEND)
-        {
-            type = APPENDFILE;
-            last_redirect_type = CMD;
-        }
-        else
-        {
-            type = get_token_type(split_input[i], is_first_token);
-            if (type == REDIRECT_IN || type == REDIRECT_OUT || type == REDIRECT_APPEND || type == HERE_DOC)
-                last_redirect_type = type;
-        }
-
-        add_tocken(&token_list, new_token(split_input[i], type));
-
-        if (type == PIPE || type == REDIRECT_IN || type == REDIRECT_OUT || type == REDIRECT_APPEND || type == HERE_DOC)
-            is_first_token = 1;
-        else
-            is_first_token = 0;
-
+        else if (type == REDIRECT_IN || type == REDIRECT_OUT || type == REDIRECT_APPEND || type == HERE_DOC)
+            last_redirect_type = type;
+        add_token(&token_list, new_token(split_input[i], type));
+        is_first_token = (type == PIPE) ? 1 : 0;
         i++;
     }
     return token_list;
 }
+

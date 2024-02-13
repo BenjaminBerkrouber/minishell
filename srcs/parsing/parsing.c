@@ -24,31 +24,54 @@ void print_split_input(char **split_input)
     }
 }
 
+void add_word(char **input, char ***split_input, int *i)
+{
+    int j = 0;
+
+    while ((*input)[j] && (*input)[j] != ' ' && (*input)[j] != '<' && (*input)[j] != '>')
+        j++;
+    if (j > 0) {
+        (*split_input)[*i] = strndup(*input, j);
+        *input += j;
+        (*i)++;
+    }
+}
+
+void add_redirection_operator(char **input, char ***split_input, int *i)
+{
+    if (**input == '<' || **input == '>')
+    {
+        if ((*(*input + 1) == '<' && **input == '<') || (*(*input + 1) == '>' && **input == '>'))
+        {
+            (*split_input)[*i] = strndup(*input, 2);
+            *input += 2;
+        }
+        else
+        {
+            (*split_input)[*i] = strndup(*input, 1);
+            *input += 1;
+        }
+        (*i)++;
+    }
+}
+
 char **ft_split_input(char *input)
 {
-    char    **split_input;
-    int     lenght;
-    int     i;
+    char **split_input;
+    int i = 0;
 
-	if (!check_quotes_closed(input))
-		return (NULL);
-    i = 0;
-    lenght = 0;
     split_input = malloc(sizeof(char *) * 100);
-    while (*input)
-    {
-        lenght = get_token_length(input);
-        input += lenght;
-        if (lenght > 0)
-        {
-            split_input[i] = strndup(input - lenght, lenght);
-            i++;
-        }
-        if (*input == ' ')
-            input++;
+    if (!split_input)
+        return (NULL);
+
+    while (*input) {
+        skip_spaces(&input);
+        add_word(&input, &split_input, &i);
+        add_redirection_operator(&input, &split_input, &i);
+        skip_spaces(&input);
     }
     split_input[i] = NULL;
-    return (split_input);
+    return split_input;
 }
 
 t_token *lexer(char *input)
@@ -60,8 +83,11 @@ t_token *lexer(char *input)
 	
 	i = 0;
 	token_list = NULL;
+    if (!check_quotes_closed(input))
+    {
+        return NULL;
+    }
 	input_expend = ft_expand_envvar(input);
-	(void)input_expend;
 	if (!input_expend)
 		return (NULL);
 	split_input = ft_split_input(input_expend);

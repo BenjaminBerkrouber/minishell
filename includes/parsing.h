@@ -35,5 +35,6 @@ token_type determine_token_type(char *token);
 void append_token(t_token **token_list, t_token *new_token);
 t_token *create_token(char *value, token_type type);
 int is_meta_char(char *str);
+void skip_spaces(char **input);
 
 #endif
