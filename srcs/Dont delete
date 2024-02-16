@@ -1,40 +1,14 @@
 Attention
 
-// echo $lol "$lol" '$lol' $"" $'' $""lol $''lol "'lol'" '"lol"' "'"lol"'" '"'lol'"'
-
-"" -> "" Command
-'' -> '' Command
-$"" -> ""
-$'' -> ''
-
-export lol="<lol"
-$lol -> "<"lol ou "<lol"
-echo << lol -> lol delim
-
-
-
-export TEST=coucou
-echo '"$TEST"'
-	-> "$TEST"
-echo "'$TEST'"
-	-> 'coucou'
-echo "test  $TEST  test"
-	-> test  coucou  test
-echo 'test  $TEST  test'
-	-> test  $TEST  test
-echo "'test  $TEST  test'"
-	-> 'test  coucou  test'
-echo '"test  $TEST  test"'
-	-> "test  $TEST  test"
-echo "$TEST  t  $TEST"
-	-> coucou  t  coucou
-
-$$ = quoi
+# export
 
 export lol="echo <Makefile"
 $lol
     -> <Makefile
 
-export lol="echo <Makefile"
-echo $lol
-    -> echo <Makefile
+
+export lol="<lol"
+$lol -> "<"lol ou "<lol"
+
+export mdr='"$lol"'
+$mdr -> "$lol"

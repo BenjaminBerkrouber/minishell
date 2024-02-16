@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 02:45:18 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/07 18:44:28 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/16 03:39:43 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,4 +57,5 @@ t_token *tokenize(char **split_input);
 void print_tokens(t_token *tokens);
 int is_token_redirection(token_type token);
 void    free_tokens(t_token *tokens);
+
 #endif

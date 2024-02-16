@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 02:48:01 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/07 18:20:48 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/16 03:35:00 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,21 @@ void print_split_input(char **split_input)
 void add_word(char **input, char ***split_input, int *i)
 {
     int j = 0;
+    char quote;
 
+    quote = '\0';
     while ((*input)[j] && (*input)[j] != ' ' && (*input)[j] != '<' && (*input)[j] != '>')
+    {
+        if ((*input)[j] == '\'' || (*input)[j] == '"')
+        {
+            quote = (*input)[j];
+            j++;
+            while ((*input)[j] != quote)
+                j++;
+        }
         j++;
+    }
+        
     if (j > 0) {
         (*split_input)[*i] = strndup(*input, j);
         *input += j;
@@ -64,14 +76,15 @@ char **ft_split_input(char *input)
     if (!split_input)
         return (NULL);
 
-    while (*input) {
+    while (*input)
+    {
         skip_spaces(&input);
         add_word(&input, &split_input, &i);
         add_redirection_operator(&input, &split_input, &i);
         skip_spaces(&input);
     }
     split_input[i] = NULL;
-    return split_input;
+    return (split_input);
 }
 
 t_token *lexer(char *input)
@@ -79,29 +92,25 @@ t_token *lexer(char *input)
     t_token *token_list;
     char *input_expend;
     char **split_input;
-	int i;
-	
-	i = 0;
-	token_list = NULL;
+    int i;
+
+    i = 0;
+    token_list = NULL;
     if (!check_quotes_closed(input))
-    {
         return NULL;
-    }
-	input_expend = ft_expand_envvar(input);
-	if (!input_expend)
-		return (NULL);
-	split_input = ft_split_input(input_expend);
+    input_expend = ft_expand_envvar(input);
+    if (!input_expend)
+        return (NULL);
+    split_input = ft_split_input(input_expend);
     free(input_expend);
     if (!split_input)
-		return (NULL);
-	split_input = ft_clean_input(split_input);
-	if (!split_input)
-		return (NULL);
-	token_list = tokenize(split_input);
-	if (!token_list)
-		return (NULL);
+        return (NULL);
+    token_list = tokenize(split_input);
     while (split_input[i])
         free(split_input[i++]);
     free(split_input);
-	return (token_list);
+    clean_quotes_from_tokens(token_list);
+    if (!token_list)
+        return (NULL);
+    return (token_list);
 }

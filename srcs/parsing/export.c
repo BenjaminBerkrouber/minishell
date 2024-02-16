@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:10:14 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/07 18:57:08 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/16 03:39:48 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,6 @@
 
 int last_exit_status = 5;
 
-/**
- * Extrait le nom de la variable d'environnement depuis une chaîne d'entrée à partir d'un indice donné.
- * 
- * @param input La chaîne d'entrée contenant la variable d'environnement à extraire.
- * @param index Un pointeur vers l'indice dans la chaîne d'entrée où commence le nom de la variable.
- * 
- * @return Le nom de la variable d'environnement extrait, alloué dynamiquement.
- *         Retourne NULL si l'allocation échoue ou si le nom de la variable est invalide.
- *         L'indice est mis à jour pour pointer après la fin du nom de la variable extraite.
- */
 static char *extract_var_name(const char *input, int *index)
 {
     int start;
@@ -60,47 +50,31 @@ static char *get_var_value(char *var_name)
     return (ft_strdup(""));
 }
 
-/**
- * Traite les séquences de guillemets simples dans une chaîne d'entrée et copie le contenu entre guillemets dans le résultat.
- * 
- * @param input La chaîne d'entrée à analyser pour les guillemets.
- * @param params Structure contenant les paramètres nécessaires pour le traitement, 
- *               y compris le résultat en cours de construction, les indices actuels de traitement, 
- *               et un indicateur pour le statut des guillemets simples.
- * 
- * Note: Cette fonction met à jour les indices et le statut des guillemets dans `params`.
- */
 static void handle_quotes(const char *input, t_expansion_params *params)
 {
-    if (input[*params->i] == '\'' && !*params->in_single_quote)
+    if (input[*params->i] == '\'' && *params->in_single_quote == 0)
     {
         *params->in_single_quote = 1; 
         (*params->result)[(*params->j)++] = input[(*params->i)++];
         while (input[*params->i] && input[*params->i] != '\'')
             (*params->result)[(*params->j)++] = input[(*params->i)++];
     }
-    if (input[*params->i] == '\'' && *params->in_single_quote)
+    if (input[*params->i] == '\'' && *params->in_single_quote == 1)
+    {
+        *params->in_single_quote = 0;
+        (*params->result)[(*params->j)++] = input[(*params->i)++];
+    }
+    if (input[*params->i] == '"' && *params->in_single_quote == 0)
+    {
+        *params->in_single_quote = 2;
+        (*params->result)[(*params->j)++] = input[(*params->i)++];
+    }
+    if (input[*params->i] == '"' && *params->in_single_quote == 2)
     {
         *params->in_single_quote = 0;
         (*params->result)[(*params->j)++] = input[(*params->i)++];
     }
 }
-
-int ft_nbrlen(int n)
-{
-    int len;
-
-    len = 0;
-    if (n <= 0)
-        len = 1;
-    while (n != 0)
-    {
-        len++;
-        n = n / 10;
-    }
-    return (len);
-}
-
 
 static void expand_exit_status(t_expansion_params *params)
 {
@@ -119,7 +93,6 @@ static void expand_exit_status(t_expansion_params *params)
 
     *params->i += 2; 
 }
-
 
 static void expand_env_variable(const char *input, t_expansion_params *params)
 {
@@ -143,33 +116,20 @@ static void add_char_to_result(t_expansion_params *params, char c)
     (*params->i)++;
 }
 
-/**
- * Traite l'expansion des variables d'environnement dans une chaîne d'entrée, en remplaçant les noms de variables par leurs valeurs.
- * 
- * @param input La chaîne d'entrée contenant potentiellement des variables d'environnement à expandre.
- * @param params Structure contenant les paramètres nécessaires pour l'expansion, 
- *               incluant le résultat en cours de construction, les indices de traitement actuels, 
- *               et un indicateur pour le statut des guillemets simples.
- * 
- * Note: Les variables à l'intérieur des guillemets simples ne sont pas expansées. 
- * Cette fonction met à jour les indices de traitement et construit le résultat final dans `params`.
- */
 static void handle_variable_expansion(const char *input, t_expansion_params *params)
 {
-    if (input[*params->i] == '$' && !*params->in_single_quote)
+    if (input[*params->i] == '$' && *params->in_single_quote != 1)
     {
         if (input[*params->i + 1] == '?')
-        {
             expand_exit_status(params);
-        }
-        else if (input[*params->i + 1] != ' ' && input[*params->i + 1] != '\0')
-        {
+        else if ((input[*params->i + 1] == '"' || input[*params->i + 1] == '\'') && *params->in_single_quote == 0)
             expand_env_variable(input, params);
-        }
+        else if (!ft_isalnum(input[*params->i + 1]))
+            add_char_to_result(params, input[*params->i]);            
+        else if (input[*params->i + 1] != ' ' && input[*params->i + 1] != '\0')
+            expand_env_variable(input, params);
         else
-        {
             add_char_to_result(params, input[*params->i]);
-        }
     }
     else
     {
@@ -177,19 +137,6 @@ static void handle_variable_expansion(const char *input, t_expansion_params *par
     }
 }
 
-
-/**
- * Effectue l'expansion des variables d'environnement dans une chaîne d'entrée.
- * 
- * @param input La chaîne d'entrée où l'expansion des variables d'environnement doit être effectuée.
- * 
- * @return Une nouvelle chaîne avec les variables d'environnement expansées. 
- * La chaîne est allouée dynamiquement et doit être libérée par l'appelant.
- * Retourne NULL en cas d'échec d'allocation.
- * 
- * Note: Cette fonction gère également les guillemets simples pour s'assurer que les variables
- * à l'intérieur des guillemets ne sont pas expansées.
- */
 char *ft_expand_envvar(const char *input)
 {
     char *result = (char *)malloc(1024);
@@ -203,7 +150,7 @@ char *ft_expand_envvar(const char *input)
     {
         handle_quotes(input, &params);
         if (input[i])
-            handle_variable_expansion(input, &params);
+        handle_variable_expansion(input, &params);
     }
     result[j] = '\0';
     return (result);

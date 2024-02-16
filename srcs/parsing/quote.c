@@ -6,49 +6,11 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 16:55:49 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/07 17:49:46 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/16 03:42:06 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void add_char_to_temp_str(char c, char *temp_str, int *temp_len)
-{
-    temp_str[(*temp_len)++] = c;
-    temp_str[*temp_len] = '\0';
-}
-
-void handle_char(char c, char *temp_str, int *temp_len, char *current_quote)
-{
-    if ((c == '"' || c == '\'') && (*current_quote == '\0' || *current_quote == c))
-    {
-        if (*current_quote == '\0')
-            *current_quote = c;
-        else
-            *current_quote = '\0'; 
-    }
-    else
-        if (!(*current_quote != '\0' && c == *current_quote))
-            add_char_to_temp_str(c, temp_str, temp_len);
-}
-
-void process_input_str(char *input, char **cleaned, int *index_cleaned, char *temp_str, char *current_quote)
-{
-    int temp_len = 0;
-    int i = 0;
-
-    while (input[i] != '\0')
-    {
-        handle_char(input[i], temp_str, &temp_len, current_quote);
-        i++;
-    }
-    if (*current_quote == '\0' && temp_len > 0)
-    {
-        cleaned[*index_cleaned] = strdup(temp_str);
-        (*index_cleaned)++;
-        temp_str[0] = '\0';
-    }
-}
 
 int check_quotes_closed(const char *input)
 {
@@ -76,26 +38,45 @@ int check_quotes_closed(const char *input)
     return (1);
 }
 
-char **ft_clean_input(char **split_input)
+void handle_char(char c, char *temp_str, int *temp_len, char *current_quote)
 {
+    if (c == '\'' && (*current_quote == '\0' || *current_quote == '\''))
+        *current_quote = (*current_quote == '\'') ? '\0' : '\'';
+    else if (c == '"' && (*current_quote == '\0' || *current_quote == '"'))
+        *current_quote = (*current_quote == '"') ? '\0' : '"';
+    else
+        temp_str[(*temp_len)++] = c;
+    temp_str[*temp_len] = '\0';
+}
+
+char *clean_quotes_from_token_value(const char *value)
+{
+    char temp_str[1024];
+    int temp_len = 0;
+    char current_quote = '\0';
     int i;
-    int index_cleaned;
-    char current_quote;
-    char **split_clean;
-    char *temp_str;
-    
+    char *cleaned_value;
+
     i = 0;
-    index_cleaned = 0;
-    current_quote = '\0';
-    split_clean = malloc(sizeof(char *) * 100);
-    temp_str = malloc(sizeof(char) * 1024);
-    while (split_input[i] != NULL)
+
+    while (value[i] != '\0')
     {
-        temp_str[0] = '\0';
-        process_input_str(split_input[i], split_clean, &index_cleaned, temp_str, &current_quote);
+        handle_char(value[i], temp_str, &temp_len, &current_quote);
         i++;
     }
-    split_clean[index_cleaned] = NULL;
-    free(temp_str);
-    return split_clean;
+    cleaned_value = malloc(temp_len + 1);
+    if (cleaned_value)
+        strcpy(cleaned_value, temp_str);
+    return (cleaned_value);
 }
+
+
+void clean_quotes_from_tokens(t_token *tokens) {
+    while (tokens) {
+        char *cleaned_value = clean_quotes_from_token_value(tokens->value);
+        free(tokens->value); // Libérer l'ancienne valeur.
+        tokens->value = cleaned_value; // Mettre à jour avec la nouvelle valeur nettoyée.
+        tokens = tokens->next; // Passer au token suivant.
+    }
+}
+

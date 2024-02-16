@@ -5,6 +5,10 @@ $ -> $
 [command] [option] [arg] [option]
 cat -e Makefile -e
 
+echo << lol -> lol delim
+pb " avec plusieru mots"
+
+
 <lol
 >lol
 <<lol
@@ -21,7 +25,33 @@ lol<Makefile
 |
 ec << lol
 ec >> lol
-
-
+lol|
+|lol
+||
 "
 '
+
+
+"" -> "" Command
+'' -> '' Command
+$"" -> ""
+$'' -> ''
+
+$$ = quoi
+"$"
+
+echo $lol "$lol" '$lol' $"" $'' $""lol $''lol "'lol'" '"lol"' "'"lol"'" '"'lol'"' "$" '$' $? $.
+
+export TEST=coucou
+echo "'$TEST'"
+	-> 'coucou'
+echo "test  $TEST  test"
+	-> test  coucou  test
+echo 'test  $TEST  test'
+	-> test  $TEST  test
+echo "'test  $TEST  test'"
+	-> 'test  coucou  test'
+echo '"test  $TEST  test"'
+	-> "test  $TEST  test"
+echo "$TEST  t  $TEST"
+	-> coucou  t  coucou
