@@ -1,14 +1,3 @@
-$? -> sortie d'erreur de la commande precedentes
-$ -> $
-
-
-[command] [option] [arg] [option]
-cat -e Makefile -e
-
-echo << lol -> lol delim
-pb " avec plusieru mots"
-
-
 <lol
 >lol
 <<lol
@@ -27,20 +16,11 @@ ec << lol
 ec >> lol
 lol|
 |lol
+lol|lol
 ||
 "
 '
 
-
-"" -> "" Command
-'' -> '' Command
-$"" -> ""
-$'' -> ''
-
-$$ = quoi
-"$"
-
-echo $lol "$lol" '$lol' $"" $'' $""lol $''lol "'lol'" '"lol"' "'"lol"'" '"'lol'"' "$" '$' $? $.
 
 export TEST=coucou
 echo "'$TEST'"
@@ -55,3 +35,12 @@ echo '"test  $TEST  test"'
 	-> "test  $TEST  test"
 echo "$TEST  t  $TEST"
 	-> coucou  t  coucou
+
+export lol="echo <Makefile"
+$lol
+    -> <Makefile
+
+$lol -> "<"lol ou "<lol"
+
+export mdr='"$lol"'
+$mdr -> "$lol"

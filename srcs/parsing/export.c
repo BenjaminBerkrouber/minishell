@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:10:14 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/16 03:39:48 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/17 04:44:01 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,23 @@ static char *extract_var_name(const char *input, int *index)
 static char *get_var_value(char *var_name)
 {
     char *value;
-    
+    char *quoted_value;
+    size_t total_length;
+
     value = getenv(var_name);
-    if (value)
-        return (value);
-    return (ft_strdup(""));
+    if (!value)
+        return (ft_strdup(""));
+    total_length = strlen(value) + 3;
+    quoted_value = malloc(total_length);
+    if (!quoted_value)
+        return (NULL);
+    quoted_value[0] = '\"';
+    quoted_value[1] = '\0';
+    ft_strlcat(quoted_value, value, total_length - 1);
+    ft_strlcat(quoted_value, "\"", total_length);
+    return (quoted_value);
 }
+
 
 static void handle_quotes(const char *input, t_expansion_params *params)
 {

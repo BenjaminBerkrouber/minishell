@@ -1,14 +1,2 @@
 Attention
 
-# export
-
-export lol="echo <Makefile"
-$lol
-    -> <Makefile
-
-
-export lol="<lol"
-$lol -> "<"lol ou "<lol"
-
-export mdr='"$lol"'
-$mdr -> "$lol"
