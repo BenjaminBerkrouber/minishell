@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 02:45:18 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/17 04:53:10 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/17 05:28:04 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ typedef struct s_token
 
 # include "ast.h"
 # include "parsing.h"
+# include "builtins.h"
 
 t_token *lexer(char *input);
 char **ft_clean_input(char **split_input);
