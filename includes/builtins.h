@@ -16,6 +16,7 @@
 int ft_pwd(void);
 int ft_env(char **argv, char **envp);
 int	ft_unset(char **args, char **envp);
-void ft_exit(char **args);
+// void ft_exit(char **args);
+int ft_cd(char **args, char **envp);
 
 #endif

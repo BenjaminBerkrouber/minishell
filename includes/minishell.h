@@ -37,7 +37,9 @@ typedef enum {
 	INFILE,
 	OUTFILE,
 	APPENDFILE,
-	DELIMITER
+	DELIMITER,
+	OR,
+	AND
 } token_type;
 
 typedef struct s_token
