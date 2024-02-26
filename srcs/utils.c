@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 08:23:41 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/23 08:04:07 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/26 19:07:18 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,42 +99,20 @@ void    free_tokens(t_token *tokens)
 
 void print_ast(t_ast_node *node, int level)
 {
+    t_token *tokens;
     if (node == NULL)
         return;
 
     for (int i = 0; i < level; i++)
         printf("    ");
 
-    switch (node->type) 
+    tokens = node->token;
+    while (tokens)
     {
-        case CMD:
-            printf("CMD: %s\n", node->value);
-            break;
-        case PIPE:
-            printf("PIPE\n");
-            break;
-        case REDIRECT_IN:
-            printf("REDIRECT_IN: %s\n", node->value);
-            break;
-        case REDIRECT_OUT:
-            printf("REDIRECT_OUT: %s\n", node->value);
-            break;
-        case REDIRECT_APPEND:
-            printf("REDIRECT_APPEND: %s\n", node->value);
-            break;
-        case HERE_DOC:
-            printf("HERE_DOC: %s\n", node->value);
-            break;
-        case AND:
-            printf("AND: %s\n", node->value);
-            break;
-        case OR:
-            printf("OR: %s\n", node->value);
-            break;
-        default:
-            printf("UNKNOWN\n");
+        printf("{%s}[%s] ", get_type(tokens->type), tokens->value);
+        tokens = tokens->next;
     }
-
+    printf("\n");
     if (node->left != NULL) {
         print_ast(node->left, level + 1);
     }
@@ -183,4 +161,16 @@ int is_valide_token(t_token *tokens)
         current = current->next;
     }
     return 1;
+}
+
+void	ft_free_tab(char **tab)
+{
+	int	i;
+
+	i = 0;
+	if (!tab)
+		return ;
+	while (tab[i])
+		free(tab[i++]);
+	free(tab);
 }

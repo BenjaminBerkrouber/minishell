@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 02:48:01 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/20 17:35:49 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/26 15:56:12 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,11 @@ void print_split_input(char **split_input)
 {
 	int i;
 
+	if (!split_input)
+	{
+		printf("NULL\n");
+		return ;
+	}
 	i = 0;
 	while (split_input[i])
 	{
@@ -94,8 +99,6 @@ void add_pipe_or_and_operator(char **input, char ***split_input, int *i)
         (*i)++;
     }
 }
-
-
 
 char **ft_split_input(char *input)
 {

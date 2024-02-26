@@ -1,0 +1,7 @@
+Attention
+
+ls > | cat 
+ls << | cat
+etc
+
+echo '"''$PATH''"'
