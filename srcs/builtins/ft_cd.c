@@ -6,43 +6,11 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/17 05:21:24 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/17 05:27:38 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/20 21:39:14 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-char *build_path(char *reltive_path)
-{
-    char *absolut_path;
-    char *current_path;
-    size_t current_path_len;
-    size_t reltive_path_len;
-    
-    current_path = getcwd(NULL, 0);
-    if (!current_path)
-        return (NULL);
-    current_path_len = ft_strlen(current_path);
-    reltive_path_len = ft_strlen(reltive_path);
-    absolut_path = malloc(current_path_len + reltive_path_len + 2);
-    if (!absolut_path)
-    {
-        free(current_path);
-        return (NULL);
-    }
-    strcpy(absolut_path, current_path);
-    absolut_path[current_path_len] = '/';
-    strcpy(absolut_path + current_path_len + 1, reltive_path);
-    free(current_path);
-    return (absolut_path);
-}
-
-char *get_path(char *path)
-{
-    if (path[0] == '/')
-        return (ft_strdup(path));
-    return (build_path(path));
-}
 
 int is_valide_parsing(char **args, char **envp)
 {
@@ -63,30 +31,51 @@ int is_valide_parsing(char **args, char **envp)
     return (0);
 }
 
-// gere le cas ou pwd or oldpwd nexiste pas
-void    upadte_env(char *path, char *old_path, char ***envp)
+void    update_var_in_env(char *key_value, char *key, char ***envp)
 {
-    char *oldpwd_str;
-    char *pwd_str;
+    char *env_var;
+    char *key;
     int i;
 
     i = 0;
-    oldpwd_str = ft_strjoin("OLDPWD=", old_path);
-    pwd_str = ft_strjoin("PWD=", path);
+    key = ft_strjoin(key, "=");
+    env_var = ft_strjoin(key, key_value);
     while ((*envp)[i])
     {
-        if (ft_strncmp((*envp)[i], "OLDPWD=", 7) == 0)
+        if (ft_strncmp((*envp)[i], key_value, ft_strlen(key_value)) == 0)
         {
             free((*envp)[i]);
-            (*envp)[i] = oldpwd_str;
-        }
-        else if (ft_strncmp((*envp)[i], "PWD=", 4) == 0)
-        {
-            free((*envp)[i]);
-            (*envp)[i] = pwd_str;
+            (*envp)[i] = env_var;
         }
         i++;
     }
+}
+
+void    add_var_in_env(char *key_value, char *key, char ***envp)
+{
+    
+}
+
+int    search_var_in_env(char *key,char ***envp)
+{
+    int i;
+
+    i = 0;
+    while ((*envp)[i])
+    {
+        if (ft_strncmp((*envp)[i], key, ft_strlen(key) - 1) == 0)
+            return (1);
+        i++;
+    }
+    return (0);
+}
+
+void    upadte_env(char *key_value, char *key ,char ***envp)
+{
+    if (search_var_in_env(key, envp))
+        update_var_in_env(key_value, key, envp);
+    else
+        add_var_in_env(key_value, key, envp);
 }
 
 int ft_cd(char **args, char **envp)
@@ -99,20 +88,14 @@ int ft_cd(char **args, char **envp)
     exit_code = is_valide_parsing(args, envp);
     if (exit_code != 0)
         return (exit_code);
-    path = build_path(args[1]);
-    if (!path)
-    {
-        perror("Error : Allocated failed");
-        return (-1);
-    }
-    exit_code = chdir(path);
+    exit_code = chdir(args[1]);
     if (exit_code == -1)
     {
-        fprintf(stderr, "bash: cd: %s: Aucun fichier ou dossier de ce type", args[1]);
+        perror("cd");
         return (1);
     }
-    ft_pwd();
-    upadte_env(path, old_path, &envp);
-    ft_env(NULL, envp);
+    path = getcwd(NULL, 0);
+    upadte_env(path, "PWD", &envp);
+    upadte_env(old_path, "OLDPWD",&envp);
     return (exit_code);
 }

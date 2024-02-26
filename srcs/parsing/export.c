@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:10:14 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/17 04:44:01 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/20 19:12:33 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,17 +130,25 @@ static void add_char_to_result(t_expansion_params *params, char c)
 static void handle_variable_expansion(const char *input, t_expansion_params *params)
 {
     if (input[*params->i] == '$' && *params->in_single_quote != 1)
-    {
+    {        
         if (input[*params->i + 1] == '?')
             expand_exit_status(params);
         else if ((input[*params->i + 1] == '"' || input[*params->i + 1] == '\'') && *params->in_single_quote == 0)
             expand_env_variable(input, params);
-        else if (!ft_isalnum(input[*params->i + 1]))
-            add_char_to_result(params, input[*params->i]);            
+        else if (!ft_isalpha(input[*params->i + 1]))
+        {
+            add_char_to_result(params, input[*params->i]);
+            if (input[*params->i] == '$')
+                add_char_to_result(params, input[*params->i]);
+        }
         else if (input[*params->i + 1] != ' ' && input[*params->i + 1] != '\0')
             expand_env_variable(input, params);
         else
+        {
             add_char_to_result(params, input[*params->i]);
+            if (input[*params->i] == '$')
+                *params->i += 1;
+        }
     }
     else
     {

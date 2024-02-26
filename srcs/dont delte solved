@@ -21,6 +21,7 @@ lol|lol
 "
 '
 
+ls|<lol -> doit passer
 
 export TEST=coucou
 echo "'$TEST'"
@@ -36,6 +37,9 @@ echo '"test  $TEST  test"'
 echo "$TEST  t  $TEST"
 	-> coucou  t  coucou
 
+echo $1lol -> $1lol
+echo $$lol -> $$lol
+
 export lol="echo <Makefile"
 $lol
     -> <Makefile
@@ -47,8 +51,13 @@ $mdr -> "$lol"
 
 echo $lol "$lol" '$lol' $"" $'' $""lol $''lol "'lol'" '"lol"' "'"lol"'" '"'lol'"' "$" '$' $? $.
 
+ls "-lol" ""-lol ''-lol '-lol' -> All option
+
 $$ = quoi
 "$"
+
+ls - -> Argument
+
 
 "" -> "" Command
 '' -> '' Command
@@ -57,3 +66,5 @@ $'' -> ''
 
 $? -> sortie d'erreur de la commande precedentes
 $ -> $
+
+

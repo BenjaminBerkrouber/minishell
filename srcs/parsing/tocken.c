@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 08:24:17 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/16 03:25:50 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/20 20:01:53 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,14 +56,43 @@ void add_token(t_token **token_list, t_token *new_token)
     }
 }
 
+int is_option(char *token)
+{
+    int i = 0;
+
+    if (token && token[0] == '-')
+        return (1);
+    while (token[i] == '"' || token[i] == '\'')
+        i++;
+    
+    if (token[i] == '-' && token[i+1] != '\0')
+    {
+        if (token[i + 1] == '"' || token[i + 1] == '\'')
+        {
+            i += 2;
+            while (token[i] && (token[i] == '"' || token[i] == '\''))
+                i++;
+            return token[i] != '\0';
+        }
+        return (1);
+    }
+    return (0);
+}
+
+
+
 token_type get_token_type(char *token, int is_first_token)
 {
     if (is_first_token && !is_meta_char(token))
         return CMD;
-    else if (token[0] == '-')
+    else if (is_option(token))
         return OPTION;
     else if (strcmp(token, "|") == 0)
         return PIPE;
+    else if (strcmp(token, "||") == 0)
+        return OR;
+    else if (strcmp(token, "&&") == 0)
+        return AND;
     else if (strcmp(token, ">") == 0)
         return REDIRECT_OUT;
     else if (strcmp(token, "<") == 0)
@@ -75,6 +104,7 @@ token_type get_token_type(char *token, int is_first_token)
     else
         return ARGUMENT;
 }
+
 
 t_token *tokenize(char **split_input)
 {
@@ -108,7 +138,7 @@ t_token *tokenize(char **split_input)
         else if (type == REDIRECT_IN || type == REDIRECT_OUT || type == REDIRECT_APPEND || type == HERE_DOC)
             last_redirect_type = type;
         add_token(&token_list, new_token(split_input[i], type));
-        is_first_token = (type == PIPE) ? 1 : 0;
+        is_first_token = (type == PIPE || type == OR || type == AND) ? 1 : 0;
         i++;
     }
     return token_list;

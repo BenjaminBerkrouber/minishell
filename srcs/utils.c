@@ -6,42 +6,11 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 08:23:41 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/17 03:12:24 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/23 08:04:07 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int is_command(char *token)
-{
-    if (strchr(token, '/') != NULL) 
-        return access(token, X_OK) == 0;
-
-    char *path = getenv("PATH");
-    if (!path)
-        return 0;
-
-    char *path_copy = strdup(path);
-    if (!path_copy) return 0;
-
-    char *dir = strtok(path_copy, ":");
-    while (dir != NULL) {
-        char *full_path = malloc(strlen(dir) + strlen(token) + 2);
-        if (full_path) {
-            sprintf(full_path, "%s/%s", dir, token);
-            if (access(full_path, X_OK) == 0) {
-                free(full_path);
-                free(path_copy);
-                return 1;
-            }
-            free(full_path);
-        }
-        dir = strtok(NULL, ":");
-    }
-
-    free(path_copy);
-    return 0;
-}
 
 void skip_spaces(char **input)
 {
@@ -61,6 +30,10 @@ int is_meta_char(char *c)
         return REDIRECT_APPEND;
     if (strncmp(c, "<<", 2) == 0)
         return HERE_DOC;
+    if (strncmp(c, "||", 2) == 0)
+        return OR;
+    if (strncmp(c, "&&", 2) == 0)
+        return AND;
     return 0;
 }
 
@@ -92,6 +65,10 @@ char *get_type(int type)
         return "APPENDFILE";
     case DELIMITER:
         return "DELIMITER";
+    case OR:
+        return "OR";
+    case AND:
+        return "AND";
     default:
         return "UNKNOWN";
     }
@@ -148,6 +125,12 @@ void print_ast(t_ast_node *node, int level)
         case HERE_DOC:
             printf("HERE_DOC: %s\n", node->value);
             break;
+        case AND:
+            printf("AND: %s\n", node->value);
+            break;
+        case OR:
+            printf("OR: %s\n", node->value);
+            break;
         default:
             printf("UNKNOWN\n");
     }
@@ -162,8 +145,7 @@ void print_ast(t_ast_node *node, int level)
 
 int is_token_redirection(token_type token)
 {
-    return (token == PIPE ||
-        token == REDIRECT_IN ||
+    return ( token == REDIRECT_IN ||
         token == REDIRECT_OUT ||
         token == REDIRECT_APPEND ||
         token == HERE_DOC);

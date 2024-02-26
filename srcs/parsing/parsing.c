@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 02:48:01 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/17 05:04:39 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/20 17:35:49 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,15 +68,34 @@ void add_redirection_operator(char **input, char ***split_input, int *i)
 	}
 }
 
-void add_pipe_operator(char **input, char ***split_input, int *i)
+void add_pipe_or_and_operator(char **input, char ***split_input, int *i)
 {
-	if (**input == '|')
-	{
-		(*split_input)[*i] = strndup(*input, 1);
-		*input += 1;
-		(*i)++;
-	}
+    if (**input == '|')
+    {
+        if (*(*input + 1) == '|')
+        {
+            (*split_input)[*i] = strndup(*input, 2);
+            *input += 2;
+        }
+        else
+        {
+            (*split_input)[*i] = strndup(*input, 1); 
+            *input += 1;
+        }
+        (*i)++;
+    }
+    else if (**input == '&')
+    {
+        if (*(*input + 1) == '&')
+        {
+            (*split_input)[*i] = strndup(*input, 2);
+            *input += 2;
+        }
+        (*i)++;
+    }
 }
+
+
 
 char **ft_split_input(char *input)
 {
@@ -91,7 +110,7 @@ char **ft_split_input(char *input)
 	{
 		skip_spaces(&input);
 		add_word(&input, &split_input, &i);
-		add_pipe_operator(&input, &split_input, &i);
+		add_pipe_or_and_operator(&input, &split_input, &i);
 		add_redirection_operator(&input, &split_input, &i);
 		skip_spaces(&input);
 	}

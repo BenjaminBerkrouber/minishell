@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 16:55:49 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/16 03:42:06 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/20 17:42:16 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,9 @@ char *clean_quotes_from_token_value(const char *value)
 void clean_quotes_from_tokens(t_token *tokens) {
     while (tokens) {
         char *cleaned_value = clean_quotes_from_token_value(tokens->value);
-        free(tokens->value); // Libérer l'ancienne valeur.
-        tokens->value = cleaned_value; // Mettre à jour avec la nouvelle valeur nettoyée.
-        tokens = tokens->next; // Passer au token suivant.
+        free(tokens->value);
+        tokens->value = cleaned_value;
+        tokens = tokens->next;
     }
 }
 
