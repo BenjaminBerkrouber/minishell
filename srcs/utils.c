@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 08:23:41 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/26 19:07:18 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/27 16:04:59 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,10 @@ void print_ast(t_ast_node *node, int level)
         printf("    ");
 
     tokens = node->token;
+    // if (node->redirections)
+    //     printf("DEBOG filname redireciton : |%s|\n", node->redirections->filename);
+    // if (node->redirections->next)
+    //     printf("DEBOG filname redireciton : |%s|\n", node->redirections->next->filename);   
     while (tokens)
     {
         printf("{%s}[%s] ", get_type(tokens->type), tokens->value);

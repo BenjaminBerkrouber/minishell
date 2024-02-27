@@ -6,29 +6,11 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/26 17:52:08 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/26 20:43:04 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/27 17:14:52 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void print_debog(char **split_input)
-{
-	int i;
-
-	if (!split_input)
-	{
-		printf("NULL\n");
-		return ;
-	}
-	i = 0;
-	while (split_input[i])
-	{
-		printf("[%s] ", split_input[i]);
-		i++;
-	}
-    printf("\n");
-}
 
 char **get_args(t_token *token)
 {
@@ -45,7 +27,7 @@ char **get_args(t_token *token)
         i++;
         cursor = cursor->next;
     }
-    args = malloc(sizeof(char *) * i + 1);
+    args = malloc(sizeof(char *) * (i + 1));
     i = 0;
     cursor = token;
     while (cursor)
@@ -58,6 +40,34 @@ char **get_args(t_token *token)
     return (args);
 }
 
+static void setup_redirections(t_redirection *redirections)
+{
+    int fd;
+
+    while (redirections)
+    {
+        if (redirections->type == T_REDIRECT_OUT)
+        {
+            fd = open(redirections->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            dup2(fd, STDOUT_FILENO);
+            close(fd);
+        }
+        else if (redirections->type == T_APPEND)
+        {
+            fd = open(redirections->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
+            dup2(fd, STDOUT_FILENO);
+            close(fd);
+        }
+        else if (redirections->type == T_REDIRECT_IN)
+        {
+            fd = open(redirections->filename, O_RDONLY);
+            dup2(fd, STDIN_FILENO);
+            close(fd);
+        }
+        redirections = redirections->next;
+    }
+}
+
 
 static int exec_command(t_ast_node *node, int in_fd, int out_fd, char **envp)
 {
@@ -68,6 +78,8 @@ static int exec_command(t_ast_node *node, int in_fd, int out_fd, char **envp)
     pid = fork();
     if (pid == 0)
     {
+        setup_redirections(node->redirections);
+
         if (in_fd != STDIN_FILENO)
         {
             dup2(in_fd, STDIN_FILENO);
@@ -80,8 +92,19 @@ static int exec_command(t_ast_node *node, int in_fd, int out_fd, char **envp)
         }
         path = ft_get_path(node->token->value, envp);
         args = get_args(node->token); 
-        execve(path, args, envp);
-        exit(EXIT_FAILURE);
+        if (execve(path, args, envp) == -1)
+        {
+            if (path)
+			    free(path);
+            if (args)
+            ft_free_tab(args);
+		    perror("Error: Command not found\n");
+            exit(EXIT_FAILURE);
+        }
+        if (path)
+            free(path);
+        if (args)
+            ft_free_tab(args);
     }
     return (pid);
 }
@@ -94,27 +117,23 @@ static void exec_pipeline(t_ast_node *node, char **envp, int fd_in)
     
     if (node == NULL)
         return;
-
     if (node->type == PIPE)
     {
-       
         pipe(pipe_fds);
-        // node left executre and ft[1]
         pid = exec_command(node->left, fd_in, pipe_fds[1], envp);
         close(pipe_fds[1]);
         if (fd_in > 2)
             close(fd_in);
-
-        // node right execut and ft[0]
         exec_pipeline(node->right, envp, pipe_fds[0]);
         close(pipe_fds[0]);
         waitpid(pid, &err_code, 0);
     }
     else
     {
-        exec_command(node, fd_in, STDOUT_FILENO, envp);
+        pid = exec_command(node, fd_in, STDOUT_FILENO, envp);
         if (fd_in > 2)
             close(fd_in);
+        waitpid(pid, &err_code, 0);
     }
 }
 

@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 08:04:21 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/26 19:16:15 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/27 16:55:45 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ int main(int argc, char *argv[], char **envp)
     t_token *tokens;
     t_ast_node *ast;
     char *command;
+    t_redirection *redirection;
 
     (void)argc;
     (void)argv;
@@ -45,6 +46,7 @@ int main(int argc, char *argv[], char **envp)
     (void)tokens;
     (void)envp;
     (void)command;
+    (void)redirection;
 
     while (1)
     {
@@ -60,12 +62,25 @@ int main(int argc, char *argv[], char **envp)
             continue;
         }
 
+        printf("\n==================TOKENS==================\n\n");
+        print_tokens(tokens);
 
-        // print_tokens(tokens);
         ast = build_ast(tokens);
         printf("\n===================AST===================\n\n");
         print_ast(ast, 0);
-        printf("\n===================Exec===================\n\n");
+
+        
+        // printf("\n===============REDIRECTION===============\n\n");
+
+        // redirection = get_pars_redirection(tokens);
+        //     printf("existe |%p|\n", redirection);
+        //     if (redirection)
+        //     {
+        //         printf("filname = [%s] - type [%d]\n", redirection->filename, redirection->type);
+        //         printf("is next |%p|\n", redirection->next);
+        //     }
+
+        printf("\n==================Exec===================\n\n");
         execute_ast(ast, envp);
         free_tokens(tokens);
         free(command);

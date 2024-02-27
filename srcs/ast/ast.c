@@ -6,45 +6,47 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 09:20:41 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/26 18:37:19 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/27 16:56:51 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_token *copy_token(t_token *src)
+t_redirection *get_pars_redirection(t_token **token)
 {
-    t_token *dst;
+    t_redirection *redirection;
+    t_token *cursor;
+    t_redirection_type type;
 
-    if (src == NULL)
-        return NULL;
-    dst = malloc(sizeof(t_token));
-    if (dst == NULL)
-        return NULL;
-    dst->type = src->type;
-    dst->next = src->next;
-    if (src->value != NULL)
+    if (!token || !*token)
+        return (NULL);
+    redirection = NULL;
+    cursor = *token;
+    while (cursor)
     {
-        dst->value = strdup(src->value);
-        if (dst->value == NULL)
+        if (cursor->next && is_token_redirection(cursor->next->type))
         {
-            free(dst);
-            return NULL;
+            type = ft_type_to_redirection(cursor->next->type);
+            ft_redirectionadd_back(&redirection,
+                ft_redirection_new(cursor->next->next->value, type));
+            cursor->next = cursor->next->next->next;
         }
-    } else
-        dst->value = NULL;
-
-    return (dst);
+        else
+            cursor = cursor->next;
+    }
+    return (redirection);
 }
 
 t_ast_node *create_ast_node(t_token *token)
 {
     t_ast_node *node;
+    t_redirection *redirection;
     
     node = malloc(sizeof(t_ast_node));
     if (!node)
         return NULL;
     node->type = token->type;
+    node->redirections = redirection = get_pars_redirection(&token);
     if (token)
         node->token = copy_token(token);
     else
@@ -52,25 +54,6 @@ t_ast_node *create_ast_node(t_token *token)
     node->left = NULL;
     node->right = NULL;
     return (node);
-}
-
-int is_split_token(token_type token)
-{
-    return (token == PIPE);
-}
-
-void    remove_token_split(t_token *tokens)
-{
-    t_token *target;
-
-    if (!tokens)
-        return ;
-    while (tokens->next && !is_split_token(tokens->next->type))
-        tokens = tokens->next;
-    target = tokens->next;
-    tokens->next = NULL;
-    free(target->value);
-    free(target);
 }
 
 t_ast_node *build_ast(t_token *tokens)
