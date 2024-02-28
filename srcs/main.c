@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 08:04:21 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/28 04:28:17 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/28 13:53:22 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,43 @@ char **copy_envp(char **envp)
     }
     new_envp[i] = NULL;
     return (new_envp);
+}
+
+void ft_free_redirection(t_redirection *redirection)
+{
+    t_redirection *current;
+    t_redirection *next;
+
+    current = redirection;
+    while (current)
+    {
+        next = current->next;
+        if (current->filename)
+            free(current->filename);
+        free(current);
+        current = next;
+    }
+}
+
+void ft_free_ast(t_ast_node *node)
+{
+    if (!node)
+        return;
+
+    // Libérer les sous-arbres gauche et droit
+    ft_free_ast(node->left);
+    ft_free_ast(node->right);
+
+    // Libérer le token associé au nœud
+    if (node->token)
+        free_tokens(node->token);
+
+    // Libérer les redirections associées au nœud
+    if (node->redirections)
+        ft_free_redirection(node->redirections);
+
+    // Libérer le nœud lui-même
+    free(node);
 }
 
 int main(int argc, char *argv[], char **envp)
@@ -62,28 +99,17 @@ int main(int argc, char *argv[], char **envp)
             continue;
         }
 
-        printf("\n==================TOKENS==================\n\n");
-        print_tokens(tokens);
-
-        ast = build_ast(tokens);
-        printf("\n===================AST===================\n\n");
-        print_ast(ast, 0);
-
         // printf("\n==================TOKENS==================\n\n");
         // print_tokens(tokens);
-        // printf("\n===============REDIRECTION===============\n\n");
 
-        // redirection = get_pars_redirection(tokens);
-        //     printf("existe |%p|\n", redirection);
-        //     if (redirection)
-        //     {
-        //         printf("filname = [%s] - type [%d]\n", redirection->filename, redirection->type);
-        //         printf("is next |%p|\n", redirection->next);
-        //     }
+        ast = build_ast(&tokens);
+        // printf("\n===================AST===================\n\n");
+        // print_ast(ast, 0);
 
-        printf("\n==================Exec===================\n\n");
+        // printf("\n==================Exec===================\n\n");
         execute_ast(ast, envp);
-        free_tokens(tokens);
+        // free_tokens(tokens);
+        ft_free_ast(ast);
         free(command);
     }
     return 0;

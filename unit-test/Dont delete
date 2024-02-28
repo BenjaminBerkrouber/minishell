@@ -5,3 +5,7 @@ ls << | cat
 etc
 
 echo '"''$PATH''"'
+
+<<a -> valgrind
+
+>a >b -> cree fichier '>'

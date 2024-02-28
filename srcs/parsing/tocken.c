@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 08:24:17 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/26 16:31:08 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/28 16:20:21 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,7 @@ t_token *tokenize(char **split_input)
             if (is_token_redirection(type))
             {
                 printf("bash: erreur de syntaxe près du symbole inattendu « %s »\n", split_input[i]);    
+                g_last_exit_status = 2;
                 free_tokens(token_list);
                 return NULL;
             }

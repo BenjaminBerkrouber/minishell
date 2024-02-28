@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 16:55:49 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/20 17:42:16 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/28 13:52:30 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ int check_quotes_closed(const char *input)
     if (quote_type != '\0')
     {
         fprintf(stderr, "Syntaxe error : quaot %c not closed.\n", quote_type);
+        g_last_exit_status = 2;
         return 0;
     }
     return (1);
@@ -71,7 +72,8 @@ char *clean_quotes_from_token_value(const char *value)
 }
 
 
-void clean_quotes_from_tokens(t_token *tokens) {
+void clean_quotes_from_tokens(t_token *tokens)
+{
     while (tokens) {
         char *cleaned_value = clean_quotes_from_token_value(tokens->value);
         free(tokens->value);

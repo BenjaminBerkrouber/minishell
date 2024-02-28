@@ -6,29 +6,32 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 02:45:18 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/27 20:53:57 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/28 16:11:05 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+extern int g_last_exit_status;
+
 # include <unistd.h>
 # include "../libft/libft.h"
 
-#include <stdio.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <unistd.h>
+# include <stdio.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <stdlib.h>
+# include <string.h>
+# include <stdlib.h>
+# include <ctype.h>
+# include <unistd.h>
 # include <fcntl.h>
 # include <sys/wait.h>
 # include <sys/types.h>
 # include <limits.h>
 # include <sys/stat.h>
+# include <sys/wait.h>
 
 typedef enum {
     CMD,
@@ -67,6 +70,7 @@ int is_token_redirection(token_type token);
 void    free_tokens(t_token *tokens);
 
 int is_valide_token(t_token *tokens);
+int is_token_file(token_type token);
 void print_ast(t_ast_node *node, int level);
 
 void execute_ast(t_ast_node *node, char **envp);
@@ -74,4 +78,5 @@ void	ft_free_tab(char **tab);
 char *get_type(int type);
 char	*ft_get_path(char *cmd, char **envp);
 void pre_process_heredocs(t_ast_node *root);
+char *get_var_value(char *var_name);
 #endif

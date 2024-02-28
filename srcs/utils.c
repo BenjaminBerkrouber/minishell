@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 08:23:41 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/28 04:23:45 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/28 12:32:10 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,8 @@ void    free_tokens(t_token *tokens)
 {
     t_token *tmp;
 
+    if (!tokens)
+        return ;
     while (tokens)
     {
         tmp = tokens;
@@ -133,6 +135,14 @@ int is_token_redirection(token_type token)
         token == REDIRECT_OUT ||
         token == REDIRECT_APPEND ||
         token == HERE_DOC);
+}
+
+int is_token_file(token_type token)
+{
+    return ( token == INFILE ||
+        token == OUTFILE ||
+        token == APPENDFILE ||
+        token == DELIMITER);
 }
 
 int is_valide_token(t_token *tokens)

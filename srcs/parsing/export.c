@@ -6,13 +6,13 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:10:14 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/20 19:12:33 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/28 16:10:59 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int last_exit_status = 5;
+int g_last_exit_status = 18;
 
 static char *extract_var_name(const char *input, int *index)
 {
@@ -40,7 +40,7 @@ static char *extract_var_name(const char *input, int *index)
  * 
  * @return La valeur de la variable d'environnement si elle existe, sinon une chaîne vide.
  */
-static char *get_var_value(char *var_name)
+char *get_var_value(char *var_name)
 {
     char *value;
     char *quoted_value;
@@ -92,16 +92,13 @@ static void expand_exit_status(t_expansion_params *params)
     char    *exit_status_str;
     char    *value;
 
-    exit_status_str = ft_itoa(last_exit_status);
+    exit_status_str = ft_itoa(g_last_exit_status);
     if (!exit_status_str)
         return;
     value = exit_status_str;
     while (*value)
-    {
         (*params->result)[(*params->j)++] = *value++;
-    }
     free(exit_status_str);
-
     *params->i += 2; 
 }
 

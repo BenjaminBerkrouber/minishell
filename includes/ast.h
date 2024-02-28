@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:10:14 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/27 17:25:05 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/28 11:56:03 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ typedef struct s_ast_node {
 } t_ast_node;
 
 
-t_ast_node *build_ast(t_token *tokens);
-t_ast_node *create_ast_node(t_token *token);
+t_ast_node *build_ast(t_token **tokens);
+t_ast_node *create_ast_node(t_token **token);
 
 t_token *copy_token(t_token *src);
 void    remove_token_split(t_token *tokens);
