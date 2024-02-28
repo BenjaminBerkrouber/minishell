@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 08:04:21 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/27 16:55:45 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/28 04:28:17 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,8 @@ int main(int argc, char *argv[], char **envp)
         printf("\n===================AST===================\n\n");
         print_ast(ast, 0);
 
-        
+        // printf("\n==================TOKENS==================\n\n");
+        // print_tokens(tokens);
         // printf("\n===============REDIRECTION===============\n\n");
 
         // redirection = get_pars_redirection(tokens);

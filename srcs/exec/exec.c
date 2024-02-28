@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/26 17:52:08 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/27 17:14:52 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/28 04:55:25 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,34 +40,6 @@ char **get_args(t_token *token)
     return (args);
 }
 
-static void setup_redirections(t_redirection *redirections)
-{
-    int fd;
-
-    while (redirections)
-    {
-        if (redirections->type == T_REDIRECT_OUT)
-        {
-            fd = open(redirections->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-            dup2(fd, STDOUT_FILENO);
-            close(fd);
-        }
-        else if (redirections->type == T_APPEND)
-        {
-            fd = open(redirections->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
-            dup2(fd, STDOUT_FILENO);
-            close(fd);
-        }
-        else if (redirections->type == T_REDIRECT_IN)
-        {
-            fd = open(redirections->filename, O_RDONLY);
-            dup2(fd, STDIN_FILENO);
-            close(fd);
-        }
-        redirections = redirections->next;
-    }
-}
-
 
 static int exec_command(t_ast_node *node, int in_fd, int out_fd, char **envp)
 {
@@ -78,8 +50,6 @@ static int exec_command(t_ast_node *node, int in_fd, int out_fd, char **envp)
     pid = fork();
     if (pid == 0)
     {
-        setup_redirections(node->redirections);
-
         if (in_fd != STDIN_FILENO)
         {
             dup2(in_fd, STDIN_FILENO);
@@ -90,6 +60,7 @@ static int exec_command(t_ast_node *node, int in_fd, int out_fd, char **envp)
             dup2(out_fd, STDOUT_FILENO);
             close(out_fd);
         }
+        setup_redirections(node->redirections);
         path = ft_get_path(node->token->value, envp);
         args = get_args(node->token); 
         if (execve(path, args, envp) == -1)
@@ -139,5 +110,6 @@ static void exec_pipeline(t_ast_node *node, char **envp, int fd_in)
 
 void execute_ast(t_ast_node *node, char **envp)
 {
+    pre_process_heredocs(node);
     exec_pipeline(node, envp, STDIN_FILENO);
 }

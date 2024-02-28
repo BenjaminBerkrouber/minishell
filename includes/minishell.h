@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 02:45:18 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/26 19:07:23 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/27 20:53:57 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 # include <fcntl.h>
 # include <sys/wait.h>
 # include <sys/types.h>
+# include <limits.h>
 # include <sys/stat.h>
 
 typedef enum {
@@ -72,4 +73,5 @@ void execute_ast(t_ast_node *node, char **envp);
 void	ft_free_tab(char **tab);
 char *get_type(int type);
 char	*ft_get_path(char *cmd, char **envp);
+void pre_process_heredocs(t_ast_node *root);
 #endif

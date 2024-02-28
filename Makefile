@@ -6,7 +6,7 @@ SRC = 	srcs/main.c srcs/utils.c \
 		srcs/parsing/parsing.c srcs/parsing/tocken.c srcs/parsing/export.c srcs/parsing/quote.c srcs/parsing/and.c \
 		srcs/ast/ast.c \
 		srcs/ast/utils_ast.c srcs/ast/utils_redirection.c \
-		srcs/exec/exec.c srcs/exec/path.c
+		srcs/exec/exec.c srcs/exec/path.c srcs/exec/here_doc.c
 		# srcs/builtins/ft_pwd.c srcs/builtins/ft_env.c srcs/builtins/ft_unset.c srcs/builtins/ft_exit.c srcs/builtins/ft_cd.c 
 SRC_TEST =	unit-test/main.c \
 			srcs/utils.c \

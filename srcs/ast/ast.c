@@ -6,33 +6,45 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 09:20:41 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/27 16:56:51 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/28 04:27:18 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_redirection *get_pars_redirection(t_token **token)
+t_redirection *get_parse_redirection(t_token **token)
 {
     t_redirection *redirection;
     t_token *cursor;
+    t_token *prev;
     t_redirection_type type;
-
-    if (!token || !*token)
-        return (NULL);
-    redirection = NULL;
+    t_token *to_remove;
+    
     cursor = *token;
+    prev = NULL;
+    redirection = NULL;
     while (cursor)
     {
-        if (cursor->next && is_token_redirection(cursor->next->type))
+        if (is_token_redirection(cursor->type))
         {
-            type = ft_type_to_redirection(cursor->next->type);
-            ft_redirectionadd_back(&redirection,
-                ft_redirection_new(cursor->next->next->value, type));
-            cursor->next = cursor->next->next->next;
+            type = ft_type_to_redirection(cursor->type);
+            if (cursor->next)
+            {
+                ft_redirectionadd_back(&redirection,
+                    ft_redirection_new(ft_strdup(cursor->next->value), type));
+                to_remove = cursor->next;
+                cursor->next = cursor->next->next;
+                if (prev)
+                    prev->next = cursor->next;
+                else
+                    *token = cursor->next;
+                free(to_remove->value);
+                free(to_remove);
+                continue;
+            }
         }
-        else
-            cursor = cursor->next;
+        prev = cursor;
+        cursor = cursor->next;
     }
     return (redirection);
 }
@@ -46,7 +58,7 @@ t_ast_node *create_ast_node(t_token *token)
     if (!node)
         return NULL;
     node->type = token->type;
-    node->redirections = redirection = get_pars_redirection(&token);
+    node->redirections = redirection = get_parse_redirection(&token);
     if (token)
         node->token = copy_token(token);
     else

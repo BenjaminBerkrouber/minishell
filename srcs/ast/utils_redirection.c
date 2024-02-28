@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/27 15:30:51 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/27 17:13:46 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/28 04:41:01 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,4 +66,63 @@ void ft_redirectionadd_back(t_redirection **redirection_lst, t_redirection *new)
 		last = ft_redirectionlast(*redirection_lst);
 		last->next = new;
 	}
+}
+
+void replace_heredocs_with_infiles(t_redirection *redirections)
+{
+    t_redirection *current;
+	
+	current = redirections;
+    while (current)
+	{
+        if (current->type == T_HEREDOC)
+		{
+            current->type = T_REDIRECT_IN;
+		}
+        current = current->next;
+    }
+}
+
+void setup_redirections(t_redirection *redirections)
+{
+    int fd;
+
+	replace_heredocs_with_infiles(redirections);
+    while (redirections)
+    {
+        if (redirections->type == T_REDIRECT_OUT)
+        {
+            fd = open(redirections->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            if (fd == -1)
+            {
+                perror(redirections->filename);
+                exit(1);
+            }
+            dup2(fd, STDOUT_FILENO);
+            close(fd);
+        }
+        else if (redirections->type == T_APPEND)
+        {
+            fd = open(redirections->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
+            if (fd == -1)
+            {
+                perror(redirections->filename);
+                exit(1);
+            }
+            dup2(fd, STDOUT_FILENO);
+            close(fd);
+        }
+        else if (redirections->type == T_REDIRECT_IN)
+        {
+            fd = open(redirections->filename, O_RDONLY);
+            if (fd == -1)
+            {
+                perror(redirections->filename);
+                exit(1);
+            }
+            dup2(fd, STDIN_FILENO);
+            close(fd);
+        }
+        redirections = redirections->next;
+    }
 }
