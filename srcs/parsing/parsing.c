@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 02:48:01 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/26 15:56:12 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/29 16:43:04 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ void add_word(char **input, char ***split_input, int *i)
 		else
 			j++;
 	}
-	
-	if (j > 0) {
+	if (j > 0)
+	{
 		(*split_input)[*i] = strndup(*input, j);
 		*input += j;
 		(*i)++;

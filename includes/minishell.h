@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 02:45:18 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/28 16:11:05 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/29 16:43:45 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void print_tokens(t_token *tokens);
 int is_token_redirection(token_type token);
 void    free_tokens(t_token *tokens);
 
-int is_valide_token(t_token *tokens);
+int syntaxer(t_token *tokens);
 int is_token_file(token_type token);
 void print_ast(t_ast_node *node, int level);
 

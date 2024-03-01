@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 08:23:41 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/28 12:32:10 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/29 16:46:57 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,37 +145,45 @@ int is_token_file(token_type token)
         token == DELIMITER);
 }
 
-int is_valide_token(t_token *tokens)
+void set_syntax_error(const char *message, const char *value)
+{
+    if (value)
+        fprintf(stderr, "bash: erreur de syntaxe près du symbole inattendu « %s »\n", value);
+    else
+        fprintf(stderr, "%s\n", message);
+    g_last_exit_status = 2;
+}
+
+int syntaxer(t_token *tokens)
 {
     t_token *current = tokens;
 
     if (!current)
     {
-        printf("bash: erreur de syntaxe près du symbole inattendu « newline »\n");
+        set_syntax_error("erreur de syntaxe près du symbole inattendu « newline »", NULL);
         return 0;
     }
     if (current->type == PIPE)
     {
-        printf("bash: erreur de syntaxe près du symbole inattendu « %s »\n", current->value);   
+        set_syntax_error("erreur de syntaxe près du symbole inattendu", "|");
         return 0;
     }
+
     while (current)
     {
-        if (is_token_redirection(current->type))
+        if (is_token_redirection(current->type) && (!current->next || is_token_redirection(current->next->type) || current->next->type == PIPE))
         {
-            if (!current->next)
-            {
-                printf("bash: erreur de syntaxe près du symbole inattendu « newline »\n"); 
-                return 0;
-            }
-            if (is_token_redirection(current->next->type))
-            {
-                printf("bash: erreur de syntaxe près du symbole inattendu « %s »\n", current->next->value);    
-                return 0;
-            }
+            set_syntax_error("erreur de syntaxe près du symbole inattendu", current->next ? current->next->value : "newline");
+            return 0;
+        }
+        if (current->type == PIPE && (!current->next || current->next->type == PIPE))
+        {
+            set_syntax_error("syntax error near unexpected token", current->next ? "`|'" : "newline");
+            return 0;
         }
         current = current->next;
     }
+
     return 1;
 }
 

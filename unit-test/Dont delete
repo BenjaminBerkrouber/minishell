@@ -1,11 +1,21 @@
 Attention
 
-ls > | cat 
-ls << | cat
-etc
-
 echo '"''$PATH''"'
 
 <<a -> valgrind
 
->a >b -> cree fichier '>'
+""
+
+ls | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat
+
+ulimit -n 30; ./minishell
+
+export lol="echo lol" -> broke
+
+<< l cat
+same pb avec
+<< l cat | ls
+
+|| -> in mandatory
+
+<out cat >>out gg tu le gere

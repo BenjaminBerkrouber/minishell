@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/26 17:52:08 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/28 16:16:46 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/02/29 15:13:59 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ static int exec_command(t_ast_node *node, int in_fd, int out_fd, char **envp)
                 ft_putstr_fd(": command not found\n", 2);
             exit(127);
         }
-        args = get_args(node->token); 
+        args = get_args(node->token);
         if (execve(path, args, envp) == -1)
         {
             if (path)
