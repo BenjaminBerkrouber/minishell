@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 08:23:41 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/29 16:46:57 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/04 20:08:08 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void skip_spaces(char **input)
         (*input)++;
 }
 
-int is_meta_char(char *c)
+int get_meta_char(char *c)
 {
     if (strncmp(c, "|", 1) == 0)
         return PIPE;
@@ -30,10 +30,6 @@ int is_meta_char(char *c)
         return REDIRECT_APPEND;
     if (strncmp(c, "<<", 2) == 0)
         return HERE_DOC;
-    if (strncmp(c, "||", 2) == 0)
-        return OR;
-    if (strncmp(c, "&&", 2) == 0)
-        return AND;
     return 0;
 }
 
@@ -65,10 +61,6 @@ char *get_type(int type)
         return "APPENDFILE";
     case DELIMITER:
         return "DELIMITER";
-    case OR:
-        return "OR";
-    case AND:
-        return "AND";
     default:
         return "UNKNOWN";
     }

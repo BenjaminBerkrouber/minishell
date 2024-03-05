@@ -20,8 +20,10 @@ lol|lol
 ||
 "
 '
+""
 
 ls|<lol -> doit passer
+
 
 export TEST=coucou
 echo "'$TEST'"
@@ -67,4 +69,9 @@ $'' -> ''
 $? -> sortie d'erreur de la commande precedentes
 $ -> $
 
+export lol="echo lol" -> lol
 
+
+|| -> in mandatory
+
+<out cat >>out gg tu le gere

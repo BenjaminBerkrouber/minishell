@@ -3,19 +3,18 @@ Attention
 echo '"''$PATH''"'
 
 <<a -> valgrind
+parsing non malloc de la stuct token pas de cmd
 
-""
 
 ls | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat
 
 ulimit -n 30; ./minishell
 
-export lol="echo lol" -> broke
 
 << l cat
 same pb avec
 << l cat | ls
 
-|| -> in mandatory
+cat | cat | ls
 
-<out cat >>out gg tu le gere
+exec des pipe a lenvers

@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 02:45:18 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/29 16:43:45 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/04 20:07:00 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,7 @@ typedef enum {
 	INFILE,
 	OUTFILE,
 	APPENDFILE,
-	DELIMITER,
-	OR,
-	AND
+	DELIMITER
 } token_type;
 
 typedef struct s_token

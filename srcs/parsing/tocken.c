@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 08:24:17 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/29 16:31:39 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/04 20:07:47 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,20 +79,14 @@ int is_option(char *token)
     return (0);
 }
 
-
-
 token_type get_token_type(char *token, int is_first_token)
 {
-    if (is_first_token && !is_meta_char(token))
+    if (is_first_token && !get_meta_char(token))
         return CMD;
     else if (is_option(token))
         return OPTION;
     else if (strcmp(token, "|") == 0)
         return PIPE;
-    else if (strcmp(token, "||") == 0)
-        return OR;
-    else if (strcmp(token, "&&") == 0)
-        return AND;
     else if (strcmp(token, ">") == 0)
         return REDIRECT_OUT;
     else if (strcmp(token, "<") == 0)
@@ -139,7 +133,7 @@ t_token *tokenize(char **split_input)
         else if (type == REDIRECT_IN || type == REDIRECT_OUT || type == REDIRECT_APPEND || type == HERE_DOC)
             last_redirect_type = type;
         add_token(&token_list, new_token(split_input[i], type));
-        is_first_token = (type == PIPE || type == OR || type == AND) ? 1 : 0;
+        is_first_token = (type == PIPE) ? 1 : 0;
         i++;
     }
     return token_list;

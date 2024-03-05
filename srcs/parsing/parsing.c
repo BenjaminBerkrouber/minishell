@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 02:48:01 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/29 16:43:04 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/05 10:30:22 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ char **ft_split_input(char *input)
 	split_input = malloc(sizeof(char *) * 100);
 	if (!split_input)
 		return (NULL);
-
+	
 	while (*input)
 	{
 		skip_spaces(&input);
@@ -136,6 +136,7 @@ t_token *lexer(char *input)
 	if (!input_expend)
 		return (NULL);
 	split_input = ft_split_input(input_expend);
+	// print_split_input(split_input);
 	free(input_expend);
 	if (!split_input)
 		return (NULL);

@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/26 19:00:51 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/28 16:03:00 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/05 10:27:56 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,8 @@ char	*ft_get_path(char *cmd, char **envp)
 {
     char *path;
 
-    (void)envp; 
+	if (!cmd || ft_strlen(cmd) == 0)
+		return (NULL);
     if (access(cmd, X_OK) != 0)
         path = ft_build_path(cmd, envp);
     else

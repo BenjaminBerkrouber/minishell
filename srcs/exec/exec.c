@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/26 17:52:08 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/29 15:13:59 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/05 11:02:50 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,11 +74,11 @@ static int exec_command(t_ast_node *node, int in_fd, int out_fd, char **envp)
         args = get_args(node->token);
         if (execve(path, args, envp) == -1)
         {
+            perror(path);
             if (path)
-			    free(path);
+                free(path);
             if (args)
                 ft_free_tab(args);
-		    perror(path);
             exit(1);
         }
         if (path)
@@ -89,11 +89,11 @@ static int exec_command(t_ast_node *node, int in_fd, int out_fd, char **envp)
     return (pid);
 }
 
-static void exec_pipeline(t_ast_node *node, char **envp, int fd_in)
+void	exec_pipeline(t_ast_node *node, char **envp, int fd_in)
 {
-    int pipe_fds[2];
-    int pid;
-    int err_code;
+    int	pipe_fds[2];
+    int	pid;
+    int	err_code;
     
     if (node == NULL)
         return;
@@ -102,6 +102,7 @@ static void exec_pipeline(t_ast_node *node, char **envp, int fd_in)
         pipe(pipe_fds);
         pid = exec_command(node->left, fd_in, pipe_fds[1], envp);
         close(pipe_fds[1]);
+		
         if (fd_in > 2)
             close(fd_in);
         exec_pipeline(node->right, envp, pipe_fds[0]);

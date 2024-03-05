@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:10:14 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/28 16:10:59 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/04 19:59:26 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,11 @@ static char *extract_var_name(const char *input, int *index)
     return (var_name);
 }
 
+int is_meta_char(char c)
+{
+    return (c == '|' || c == '<' || c == '>' || c == '&');
+}
+
 /**
  * Récupère la valeur d'une variable d'environnement donnée.
  * 
@@ -44,22 +49,31 @@ char *get_var_value(char *var_name)
 {
     char *value;
     char *quoted_value;
-    size_t total_length;
-
+    int i;
+    int j;
+    
     value = getenv(var_name);
     if (!value)
-        return (ft_strdup(""));
-    total_length = strlen(value) + 3;
-    quoted_value = malloc(total_length);
-    if (!quoted_value)
-        return (NULL);
-    quoted_value[0] = '\"';
-    quoted_value[1] = '\0';
-    ft_strlcat(quoted_value, value, total_length - 1);
-    ft_strlcat(quoted_value, "\"", total_length);
+        return strdup("");
+    quoted_value = malloc(strlen(value) * 2 + 1);
+    if (!quoted_value) return NULL;
+    i = 0;
+    j = 0;
+    while (value[i])
+    {
+        if (is_meta_char(value[i]))
+        {
+            quoted_value[j++] = '\"';
+            quoted_value[j++] = value[i];
+            quoted_value[j++] = '\"';
+        }
+        else
+            quoted_value[j++] = value[i];
+        i++;
+    }
+    quoted_value[j] = '\0';
     return (quoted_value);
 }
-
 
 static void handle_quotes(const char *input, t_expansion_params *params)
 {

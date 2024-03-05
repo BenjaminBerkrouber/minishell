@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 08:04:21 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/29 16:58:00 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/05 10:53:34 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ int main(int argc, char *argv[], char **envp)
         // print_tokens(tokens);
 
         ast = build_ast(&tokens);
-        // printf("\n===================AST===================\n\n");
+        printf("\n===================AST===================\n\n");
         print_ast(ast, 0);
 
         // printf("\n==================Exec===================\n\n");
@@ -108,3 +108,9 @@ int main(int argc, char *argv[], char **envp)
     }
     return 0;
 }
+
+// int main(int argc, char **argv, char **envp)
+// {
+//     (void)argc;
+//     printf("%s \n", ft_get_path(argv[1], envp));
+// }
