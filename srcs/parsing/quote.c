@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/06 16:55:49 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/28 13:52:30 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/07 17:27:39 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,30 +52,41 @@ void handle_char(char c, char *temp_str, int *temp_len, char *current_quote)
 
 char *clean_quotes_from_token_value(const char *value)
 {
-    char temp_str[1024];
+    char *temp_str;
     int temp_len = 0;
     char current_quote = '\0';
     int i;
     char *cleaned_value;
 
     i = 0;
-
+    temp_str = malloc(sizeof(char) * (ft_strlen(value) + 1));
+    if (!temp_str)
+        return (NULL);
     while (value[i] != '\0')
     {
         handle_char(value[i], temp_str, &temp_len, &current_quote);
         i++;
     }
+    temp_str[temp_len] = '\0';
     cleaned_value = malloc(temp_len + 1);
-    if (cleaned_value)
-        strcpy(cleaned_value, temp_str);
+    if (!cleaned_value)
+    {
+        free(temp_str);
+        return (NULL);
+    }
+    strcpy(cleaned_value, temp_str);
+    free(temp_str);
     return (cleaned_value);
 }
 
 
 void clean_quotes_from_tokens(t_token *tokens)
 {
-    while (tokens) {
-        char *cleaned_value = clean_quotes_from_token_value(tokens->value);
+    char * cleaned_value;
+    
+    while (tokens)
+    {
+        cleaned_value = clean_quotes_from_token_value(tokens->value);
         free(tokens->value);
         tokens->value = cleaned_value;
         tokens = tokens->next;

@@ -1,5 +1,0 @@
-(export lol="echo lol" && $lol) > lol
-(export lol="echo lol") && $lol
- (echo lol && echo a) > lol
-(cat && echo a) <lol >out
-(cat && cat) <lol >out

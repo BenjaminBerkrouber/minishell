@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 08:24:17 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/03/04 20:07:47 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/07 17:12:59 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,12 +102,16 @@ token_type get_token_type(char *token, int is_first_token)
 
 t_token *tokenize(char **split_input)
 {
-    int i = 0;
-    int is_first_token = 1;
-    token_type last_redirect_type = CMD;
-    t_token *token_list = NULL;
+    int i;
+    int is_first_token;
+    token_type last_redirect_type;
+    t_token *token_list;
     token_type type;
 
+    i = 0;
+    is_first_token = 1;
+    last_redirect_type = CMD;
+    token_list = NULL;
     while (split_input[i])
     {
         type = get_token_type(split_input[i], is_first_token);

@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:10:14 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/03/04 19:59:26 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/05 18:15:43 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,30 +75,16 @@ char *get_var_value(char *var_name)
     return (quoted_value);
 }
 
-static void handle_quotes(const char *input, t_expansion_params *params)
-{
-    if (input[*params->i] == '\'' && *params->in_single_quote == 0)
-    {
-        *params->in_single_quote = 1; 
-        (*params->result)[(*params->j)++] = input[(*params->i)++];
-        while (input[*params->i] && input[*params->i] != '\'')
-            (*params->result)[(*params->j)++] = input[(*params->i)++];
-    }
-    if (input[*params->i] == '\'' && *params->in_single_quote == 1)
-    {
-        *params->in_single_quote = 0;
-        (*params->result)[(*params->j)++] = input[(*params->i)++];
-    }
-    if (input[*params->i] == '"' && *params->in_single_quote == 0)
-    {
-        *params->in_single_quote = 2;
-        (*params->result)[(*params->j)++] = input[(*params->i)++];
-    }
-    if (input[*params->i] == '"' && *params->in_single_quote == 2)
-    {
-        *params->in_single_quote = 0;
-        (*params->result)[(*params->j)++] = input[(*params->i)++];
-    }
+static void handle_quotes(const char c, int *in_single_quote)
+{    
+    if (c == '\'' && *in_single_quote == 0)
+        *in_single_quote = 1; 
+    else if (c == '\'' && *in_single_quote == 1)
+        *in_single_quote = 0;
+    else if (c == '"' && *in_single_quote == 0)
+        *in_single_quote = 2;
+    else if (c == '"' && *in_single_quote == 2)
+        *in_single_quote = 0;
 }
 
 static void expand_exit_status(t_expansion_params *params)
@@ -138,7 +124,7 @@ static void add_char_to_result(t_expansion_params *params, char c)
     (*params->i)++;
 }
 
-static void handle_variable_expansion(const char *input, t_expansion_params *params)
+void handle_variable_expansion(const char *input, t_expansion_params *params)
 {
     if (input[*params->i] == '$' && *params->in_single_quote != 1)
     {        
@@ -152,8 +138,10 @@ static void handle_variable_expansion(const char *input, t_expansion_params *par
             if (input[*params->i] == '$')
                 add_char_to_result(params, input[*params->i]);
         }
-        else if (input[*params->i + 1] != ' ' && input[*params->i + 1] != '\0')
+        else if (input[*params->i + 1] != ' ' && input[*params->i + 1] != '\0' && *params->in_single_quote != 1)
+        {
             expand_env_variable(input, params);
+        }
         else
         {
             add_char_to_result(params, input[*params->i]);
@@ -170,17 +158,22 @@ static void handle_variable_expansion(const char *input, t_expansion_params *par
 char *ft_expand_envvar(const char *input)
 {
     char *result = (char *)malloc(1024);
-    int i = 0, j = 0, in_single_quote = 0;
+    int i;
+    int j;
+    int in_single_quote;
     t_expansion_params params = {&result, &i, &j, &in_single_quote};
 
     if (!result)
         return (NULL);
 
+    i = 0;
+    j = 0;
+    in_single_quote = 0;
     while (input[i])
     {
-        handle_quotes(input, &params);
+        handle_quotes(input[i], &in_single_quote);
         if (input[i])
-        handle_variable_expansion(input, &params);
+            handle_variable_expansion(input, &params);
     }
     result[j] = '\0';
     return (result);

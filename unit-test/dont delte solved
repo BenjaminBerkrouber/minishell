@@ -51,7 +51,7 @@ $lol -> "<"lol ou "<lol"
 export mdr='"$lol"'
 $mdr -> "$lol"
 
-echo $lol "$lol" '$lol' $"" $'' $""lol $''lol "'lol'" '"lol"' "'"lol"'" '"'lol'"' "$" '$' $? $.
+echo $lol "$lol" '$lol' $"" $'' $""lol $''lol "'lol'" '"lol"' "'"lol"'" '"'lol'"' "$" '$' $? $. "'$lol'" "test  $lol  test" 'test  $lol  test' "'test  $lol  test'" '"test  $lol  test"' '"''$lol''"'
 
 ls "-lol" ""-lol ''-lol '-lol' -> All option
 
@@ -72,6 +72,10 @@ $ -> $
 export lol="echo lol" -> lol
 
 
-|| -> in mandatory
+<out cat >>out
 
-<out cat >>out gg tu le gere
+cat | cat | ls
+
+<< l cat
+same pb avec
+<< l cat | ls

@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 02:45:18 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/03/04 20:07:00 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/07 17:34:42 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,4 +77,8 @@ char *get_type(int type);
 char	*ft_get_path(char *cmd, char **envp);
 void pre_process_heredocs(t_ast_node *root);
 char *get_var_value(char *var_name);
+char	*gnl(int fd);
+char *build_prompt();
+void ft_free_ast(t_ast_node *root);
+
 #endif

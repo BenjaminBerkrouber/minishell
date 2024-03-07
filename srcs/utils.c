@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 08:23:41 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/03/04 20:08:08 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/07 17:11:43 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,21 +74,6 @@ void print_tokens(t_token *tokens)
         tokens = tokens->next;
     }
     printf("\n");
-}
-
-void    free_tokens(t_token *tokens)
-{
-    t_token *tmp;
-
-    if (!tokens)
-        return ;
-    while (tokens)
-    {
-        tmp = tokens;
-        tokens = tokens->next;
-        free(tmp->value);
-        free(tmp);
-    }
 }
 
 void print_ast(t_ast_node *node, int level)
@@ -189,4 +174,25 @@ void	ft_free_tab(char **tab)
 	while (tab[i])
 		free(tab[i++]);
 	free(tab);
+}
+
+char **copy_envp(char **envp)
+{
+    int i;
+    char **new_envp;
+    
+    for (i = 0; envp[i] != NULL; i++);
+    new_envp = malloc(sizeof(char *) * (i + 1));
+    if (!new_envp)
+        return (NULL);
+    for (i = 0; envp[i] != NULL; i++)
+    {
+        new_envp[i] = ft_strdup(envp[i]);
+        if (!new_envp[i])
+        {
+            perror("error memory");
+        }
+    }
+    new_envp[i] = NULL;
+    return (new_envp);
 }

@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/26 17:52:08 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/03/05 11:02:50 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/07 19:33:04 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,14 @@ char **get_args(t_token *token)
 }
 
 
-static int exec_command(t_ast_node *node, int in_fd, int out_fd, char **envp)
+static int exec_command(t_ast_node *node, int in_fd, int *pipe_fds, char **envp)
 {
     pid_t pid;
     char *path;
     char **args;
 
+    path = NULL;
+    args = NULL;
     pid = fork();
     if (pid == 0)
     {
@@ -55,13 +57,16 @@ static int exec_command(t_ast_node *node, int in_fd, int out_fd, char **envp)
             dup2(in_fd, STDIN_FILENO);
             close(in_fd);
         }
-        if (out_fd != STDOUT_FILENO)
+        if (pipe_fds[1] != STDOUT_FILENO)
         {
-            dup2(out_fd, STDOUT_FILENO);
-            close(out_fd);
+            dup2(pipe_fds[1], STDOUT_FILENO);
+            close(pipe_fds[1]);
         }
+        if (pipe_fds[0] > 2)
+            close(pipe_fds[0]);
         setup_redirections(node->redirections);
-        path = ft_get_path(node->token->value, envp);
+        if (node->token)
+            path = ft_get_path(node->token->value, envp);
         if (!path)
         {
             ft_putstr_fd(node->token->value, 2);
@@ -89,38 +94,52 @@ static int exec_command(t_ast_node *node, int in_fd, int out_fd, char **envp)
     return (pid);
 }
 
-void	exec_pipeline(t_ast_node *node, char **envp, int fd_in)
+void exec_pipeline(t_ast_node *node, char **envp, int fd_in, t_list *pid_lst)
 {
     int	pipe_fds[2];
     int	pid;
     int	err_code;
     
     if (node == NULL)
-        return;
+        return ;
     if (node->type == PIPE)
     {
         pipe(pipe_fds);
-        pid = exec_command(node->left, fd_in, pipe_fds[1], envp);
+        pid = exec_command(node->left, fd_in, pipe_fds, envp);
+        
+        ft_lstadd_back(&pid_lst, ft_lstnew((void *)(&pid)));
         close(pipe_fds[1]);
-		
+
         if (fd_in > 2)
             close(fd_in);
-        exec_pipeline(node->right, envp, pipe_fds[0]);
-        close(pipe_fds[0]);
+        exec_pipeline(node->right, envp, pipe_fds[0], pid_lst);
     }
     else
     {
-        pid = exec_command(node, fd_in, STDOUT_FILENO, envp);
+        pipe_fds[0] = -1;
+        pipe_fds[1] = STDOUT_FILENO;
+        pid = exec_command(node, fd_in, pipe_fds, envp);
+        ft_lstadd_back(&pid_lst, ft_lstnew((void *)(&pid)));
         if (fd_in > 2)
             close(fd_in);
-        waitpid(pid, &err_code, 0);
-        if (WIFEXITED(err_code))
-            g_last_exit_status = WEXITSTATUS(err_code);
+
+        while (pid_lst)
+        {
+            waitpid(*((int *)(pid_lst->content)), &err_code, 0);
+            if (WIFEXITED(err_code))
+                g_last_exit_status = WEXITSTATUS(err_code);
+            pid_lst = pid_lst->next;
+        }
+        ft_lstclear(&pid_lst, free);
     }
 }
 
 void execute_ast(t_ast_node *node, char **envp)
 {
+    t_list *pid_lst;
+
+    pid_lst = NULL;
     pre_process_heredocs(node);
-    exec_pipeline(node, envp, STDIN_FILENO);
+    exec_pipeline(node, envp, STDIN_FILENO, pid_lst);
+    
 }

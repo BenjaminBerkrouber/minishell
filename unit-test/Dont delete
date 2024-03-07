@@ -1,7 +1,5 @@
 Attention
 
-echo '"''$PATH''"'
-
 <<a -> valgrind
 parsing non malloc de la stuct token pas de cmd
 
@@ -9,12 +7,3 @@ parsing non malloc de la stuct token pas de cmd
 ls | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat
 
 ulimit -n 30; ./minishell
-
-
-<< l cat
-same pb avec
-<< l cat | ls
-
-cat | cat | ls
-
-exec des pipe a lenvers
