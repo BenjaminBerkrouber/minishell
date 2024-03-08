@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 08:23:41 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/03/07 17:11:43 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/08 15:10:35 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,11 @@ void skip_spaces(char **input)
 {
     while (**input && **input == ' ')
         (*input)++;
+}
+
+int is_meta_char(char c)
+{
+    return (c == '|' || c == '<' || c == '>' || c == '&');
 }
 
 int get_meta_char(char *c)
