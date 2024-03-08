@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 09:20:41 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/03/07 19:02:49 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/07 19:54:57 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,8 +100,11 @@ t_ast_node *build_ast(t_token **tokens)
     if (cursor == NULL)
     {
         root = create_ast_node(tokens);
-        free((*tokens)->value);
-        free(*tokens);
+        if (tokens && *tokens)
+        {
+            free((*tokens)->value);
+            free(*tokens);
+        }
     }
     else 
     {

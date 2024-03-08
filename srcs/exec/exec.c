@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/26 17:52:08 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/03/07 19:33:04 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/08 14:26:07 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,9 @@ static int exec_command(t_ast_node *node, int in_fd, int *pipe_fds, char **envp)
         if (pipe_fds[0] > 2)
             close(pipe_fds[0]);
         setup_redirections(node->redirections);
-        if (node->token)
-            path = ft_get_path(node->token->value, envp);
+        if (!node->token)
+            exit(0);
+        path = ft_get_path(node->token->value, envp);
         if (!path)
         {
             ft_putstr_fd(node->token->value, 2);
@@ -141,5 +142,6 @@ void execute_ast(t_ast_node *node, char **envp)
     pid_lst = NULL;
     pre_process_heredocs(node);
     exec_pipeline(node, envp, STDIN_FILENO, pid_lst);
+    ft_free_ast(node);
     
 }
