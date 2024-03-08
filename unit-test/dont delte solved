@@ -51,8 +51,7 @@ $lol -> "<"lol ou "<lol"
 export mdr='"$lol"'
 $mdr -> "$lol"
 
-echo $lol "$lol" '$lol' $"" $'' $""lol $''lol "'lol'" '"lol"' "'"lol"'" '"'lol'"' "$" '$' $? $. "'$lol'" "test  $lol  test" 'test  $lol  test' "'test  $lol  test'" '"test  $lol  test"' '"''$lol''"'
-
+echo $lol "$lol" '$lol' $"" $'' $""lol $''lol "'lol'" '"lol"' "'"lol"'" '"'lol'"' "$" '$' $? $. "'$lol'" "test  $lol  test" 'test  $lol  test' "'test  $lol  test'" '"test  $lol  test"' '"''$lol''"' "'""'"'"''$PWD''"'
 ls "-lol" ""-lol ''-lol '-lol' -> All option
 
 $$ = quoi

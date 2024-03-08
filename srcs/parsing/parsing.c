@@ -5,36 +5,22 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/16 02:48:01 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/03/05 12:27:18 by bberkrou         ###   ########.fr       */
+/*   Created: 2024/03/08 17:40:54 by bberkrou          #+#    #+#             */
+/*   Updated: 2024/03/08 17:43:36 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void print_split_input(char **split_input)
+void	add_word(char **input, char ***split_input, int *i)
 {
-	int i;
+	int		j;
+	char	quote;
 
-	if (!split_input)
-	{
-		printf("NULL\n");
-		return ;
-	}
-	i = 0;
-	while (split_input[i])
-	{
-		printf("[%s]\n", split_input[i]);
-		i++;
-	}
-}
-
-void add_word(char **input, char ***split_input, int *i)
-{
-	int j = 0;
-	char quote = '\0';
-
-	while ((*input)[j] && (((*input)[j] != ' ' && (*input)[j] != '<' && (*input)[j] != '>' && (*input)[j] != '|') || quote))
+	j = 0;
+	quote = '\0';
+	while ((*input)[j] && (((*input)[j] != ' ' && (*input)[j] != '<'
+		&& (*input)[j] != '>' && (*input)[j] != '|') || quote))
 	{
 		if ((*input)[j] == '\'' || (*input)[j] == '"')
 		{
@@ -55,11 +41,12 @@ void add_word(char **input, char ***split_input, int *i)
 	}
 }
 
-void add_redirection_operator(char **input, char ***split_input, int *i)
+void	add_redirection_operator(char **input, char ***split_input, int *i)
 {
 	if (**input == '<' || **input == '>')
 	{
-		if ((*(*input + 1) == '<' && **input == '<') || (*(*input + 1) == '>' && **input == '>'))
+		if ((*(*input + 1) == '<' && **input == '<')
+			|| (*(*input + 1) == '>' && **input == '>'))
 		{
 			(*split_input)[*i] = strndup(*input, 2);
 			*input += 2;
@@ -73,42 +60,42 @@ void add_redirection_operator(char **input, char ***split_input, int *i)
 	}
 }
 
-void add_pipe_or_and_operator(char **input, char ***split_input, int *i)
+void	add_pipe_or_and_operator(char **input, char ***split_input, int *i)
 {
-    if (**input == '|')
-    {
-        if (*(*input + 1) == '|')
-        {
-            (*split_input)[*i] = strndup(*input, 2);
-            *input += 2;
-        }
-        else
-        {
-            (*split_input)[*i] = strndup(*input, 1); 
-            *input += 1;
-        }
-        (*i)++;
-    }
-    else if (**input == '&')
-    {
-        if (*(*input + 1) == '&')
-        {
-            (*split_input)[*i] = strndup(*input, 2);
-            *input += 2;
-        }
-        (*i)++;
-    }
+	if (**input == '|')
+	{
+		if (*(*input + 1) == '|')
+		{
+			(*split_input)[*i] = strndup(*input, 2);
+			*input += 2;
+		}
+		else
+		{
+			(*split_input)[*i] = strndup(*input, 1);
+			*input += 1;
+		}
+		(*i)++;
+	}
+	else if (**input == '&')
+	{
+		if (*(*input + 1) == '&')
+		{
+			(*split_input)[*i] = strndup(*input, 2);
+			*input += 2;
+		}
+		(*i)++;
+	}
 }
 
-char **ft_split_input(char *input)
+char	**ft_split_input(char *input)
 {
-	char **split_input;
-	int i = 0;
+	char	**split_input;
+	int		i;
 
+	i = 0;
 	split_input = malloc(sizeof(char *) * 100);
 	if (!split_input)
 		return (NULL);
-	
 	while (*input)
 	{
 		skip_spaces(&input);
@@ -121,22 +108,21 @@ char **ft_split_input(char *input)
 	return (split_input);
 }
 
-t_token *lexer(char *input)
+t_token	*lexer(char *input)
 {
-	t_token *token_list;
-	char *input_expend;
-	char **split_input;
-	int i;
+	t_token	*token_list;
+	char	*input_expend;
+	char	**split_input;
+	int		i;
 
 	i = 0;
 	token_list = NULL;
 	if (!check_quotes_closed(input))
-		return NULL;
+		return (NULL);
 	input_expend = ft_expand_envvar(input);
 	if (!input_expend)
 		return (NULL);
 	split_input = ft_split_input(input_expend);
-	// print_split_input(split_input);
 	free(input_expend);
 	if (!split_input)
 		return (NULL);

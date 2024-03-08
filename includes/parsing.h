@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 02:48:39 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/03/08 14:45:58 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/08 16:56:41 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,8 @@
 
 #include "minishell.h"
 #include "parsing_export.h"
+#include "parsing_quotes.h"
 
-void clean_quotes_from_tokens(t_token *tokens);
-int check_quotes_closed(const char *input);
 
 int get_token_length(char *input);
 

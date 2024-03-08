@@ -2,8 +2,8 @@ NAME = minishell
 CC = gcc
 CFLAGS = -g -Wall -Wextra -Werror -I.
 SRC_DIR = srcs/
-SRC = 	srcs/main.c srcs/utils.c \
-		srcs/prompt.c srcs/free.c \
+SRC = 	srcs/main.c \
+		srcs/utils/utils.c srcs/utils/prompt.c srcs/utils/free.c \
 		srcs/parsing/parsing.c \
 		srcs/parsing/tocken.c \
 		srcs/parsing/export.c srcs/parsing/export_utils.c \

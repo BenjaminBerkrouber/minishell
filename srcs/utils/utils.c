@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 08:23:41 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/03/08 15:10:35 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/08 17:42:40 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,4 +200,21 @@ char **copy_envp(char **envp)
     }
     new_envp[i] = NULL;
     return (new_envp);
+}
+
+void	print_split_input(char **split_input)
+{
+	int i;
+
+	if (!split_input)
+	{
+		printf("NULL\n");
+		return ;
+	}
+	i = 0;
+	while (split_input[i])
+	{
+		printf("[%s]\n", split_input[i]);
+		i++;
+	}
 }

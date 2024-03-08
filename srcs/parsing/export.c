@@ -6,13 +6,13 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 14:47:35 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/03/08 15:21:56 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/08 17:23:32 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	g_last_exit_status = 18;
+int	g_last_exit_status = 0;
 
 /**
  * Extrait le nom d'une variable d'environnement à partir d'une chaîne d'entrée.
