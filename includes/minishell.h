@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 02:45:18 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/03/07 17:34:42 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/08 23:19:21 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ int syntaxer(t_token *tokens);
 int is_token_file(token_type token);
 void print_ast(t_ast_node *node, int level);
 
-void execute_ast(t_ast_node *node, char **envp);
+void execute_ast(t_ast_node *root, char **envp);
 void	ft_free_tab(char **tab);
 char *get_type(int type);
 char	*ft_get_path(char *cmd, char **envp);
@@ -80,5 +80,6 @@ char *get_var_value(char *var_name);
 char	*gnl(int fd);
 char *build_prompt();
 void ft_free_ast(t_ast_node *root);
-
+void ft_free_redirection(t_redirection *redirection);
+void    free_token(t_token *tokens);
 #endif

@@ -3,13 +3,16 @@ CC = gcc
 CFLAGS = -g -Wall -Wextra -Werror -I.
 SRC_DIR = srcs/
 SRC = 	srcs/main.c \
+		srcs/printer.c \
 		srcs/utils/utils.c srcs/utils/prompt.c srcs/utils/free.c \
 		srcs/parsing/parsing.c \
-		srcs/parsing/tocken.c \
+		srcs/parsing/tocken.c srcs/parsing/tocken_utils.c \
 		srcs/parsing/export.c srcs/parsing/export_utils.c \
+		srcs/parsing/syntaxe.c \
 		srcs/parsing/quote.c \
 		srcs/ast/ast.c \
-		srcs/ast/utils_ast.c srcs/ast/utils_redirection.c \
+		srcs/ast/utils_ast.c \
+		srcs/exec/utils_redirection.c \
 		srcs/exec/exec.c srcs/exec/path.c srcs/exec/here_doc.c \
 		srcs/builtins/ft_pwd.c 
 		# srcs/builtins/ft_env.c srcs/builtins/ft_unset.c srcs/builtins/ft_exit.c srcs/builtins/ft_cd.c 

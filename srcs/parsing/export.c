@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 14:47:35 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/03/08 17:23:32 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/08 20:43:46 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,15 +78,16 @@ static void	expand_env_variable(const char *input, t_expansion_params *params)
 {
 	char	*var_name;
 	char	*value;
+	char	*tmp;
 
 	var_name = extract_var_name(input, params->i);
 	if (!var_name)
 		return ;
 	value = get_var_value(var_name);
-	while (*value)
-	{
-		(*params->result)[(*params->j)++] = *value++;
-	}
+	tmp = (*params->result);
+	(*params->result) = ft_strjoin(tmp, value);
+	free(tmp);
+	free(value);
 	free(var_name);
 }
 
@@ -148,7 +149,8 @@ char	*ft_expand_envvar(const char *input)
 	int					in_single_quote;
 	t_expansion_params	params;
 
-	result = malloc(sizeof(char) * 1024);
+	result = malloc(sizeof(char) * 1);
+	result[0] = 0;
 	if (!result)
 		return (NULL);
 	i = 0;
@@ -164,6 +166,5 @@ char	*ft_expand_envvar(const char *input)
 		if (input[i])
 			handle_variable_expansion(input, &params);
 	}
-	result[j] = '\0';
 	return (result);
 }

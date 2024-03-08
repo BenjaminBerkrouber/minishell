@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/26 17:52:08 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/03/08 14:31:17 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/09 00:42:55 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,18 @@ char **get_args(t_token *token)
 }
 
 
-static int exec_command(t_ast_node *node, int in_fd, int *pipe_fds, char **envp)
+static int exec_command(t_ast_node *root, int in_fd, int *pipe_fds, char **envp)
 {
     pid_t pid;
     char *path;
     char **args;
+    int status_fd;
+    t_ast_node *node;
 
+    if (root->left)
+        node = root->left;
+    else 
+        node = root;
     path = NULL;
     args = NULL;
     pid = fork();
@@ -64,9 +70,12 @@ static int exec_command(t_ast_node *node, int in_fd, int *pipe_fds, char **envp)
         }
         if (pipe_fds[0] > 2)
             close(pipe_fds[0]);
-        setup_redirections(node->redirections);
-        if (!node->token)
-            exit(0);
+        status_fd = setup_redirections(node->redirections);
+        if (!node->token || status_fd == 1)
+        {
+            ft_free_ast(root);
+            exit(status_fd);
+        }
         path = ft_get_path(node->token->value, envp);
         if (!path)
         {
@@ -75,6 +84,7 @@ static int exec_command(t_ast_node *node, int in_fd, int *pipe_fds, char **envp)
                 ft_putstr_fd(": No such file or directory\n", 2);
             else
                 ft_putstr_fd(": command not found\n", 2);
+            ft_free_ast(root);
             exit(127);
         }
         args = get_args(node->token);
@@ -95,27 +105,31 @@ static int exec_command(t_ast_node *node, int in_fd, int *pipe_fds, char **envp)
     return (pid);
 }
 
-void exec_pipeline(t_ast_node *node, char **envp, int fd_in, t_list *pid_lst)
+void exec_pipeline(t_ast_node *node, char **envp, int fd_in)
 {
     int	pipe_fds[2];
     int	pid;
     int	err_code;
+    t_ast_node *tmp;
     
     if (node == NULL)
         return ;
     if (node->type == PIPE)
     {
         pipe(pipe_fds);
-        pid = exec_command(node->left, fd_in, pipe_fds, envp);
-        
+        pid = exec_command(node, fd_in, pipe_fds, envp);
         close(pipe_fds[1]);
-
         if (fd_in > 2)
             close(fd_in);
-        exec_pipeline(node->right, envp, pipe_fds[0], pid_lst);
+        ft_free_ast(node->left);
+        tmp = node->right;
+        if (node->token)
+            free_tokens(node->token);
+        if (node->redirections)
+            ft_free_redirection(node->redirections);
+        free(node);
+        exec_pipeline(tmp, envp, pipe_fds[0]);
         waitpid(pid, &err_code, 0);
-        if (WIFEXITED(err_code))
-            g_last_exit_status = WEXITSTATUS(err_code);
     }
     else
     {
@@ -124,19 +138,17 @@ void exec_pipeline(t_ast_node *node, char **envp, int fd_in, t_list *pid_lst)
         pid = exec_command(node, fd_in, pipe_fds, envp);
         if (fd_in > 2)
             close(fd_in);
+        ft_free_ast(node);
         waitpid(pid, &err_code, 0);
         if (WIFEXITED(err_code))
             g_last_exit_status = WEXITSTATUS(err_code);
     }
 }
 
-void execute_ast(t_ast_node *node, char **envp)
+void execute_ast(t_ast_node *root, char **envp)
 {
-    t_list *pid_lst;
-
-    pid_lst = NULL;
-    pre_process_heredocs(node);
-    exec_pipeline(node, envp, STDIN_FILENO, pid_lst);
-    ft_free_ast(node);
-    
+    (void)envp;
+    (void)root;
+    pre_process_heredocs(root);
+    exec_pipeline(root, envp, STDIN_FILENO);    
 }

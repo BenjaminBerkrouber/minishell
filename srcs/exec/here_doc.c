@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/27 20:53:14 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/28 04:50:49 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/08 19:26:11 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,7 @@ void process_heredocs(t_ast_node *node)
             magic_number += 1;
             file_name = temp_file_name_from_fd(magic_number);
             heredoc_fd = handle_heredoc(current->filename, file_name);
+            free(current->filename);
             current->filename = file_name;
             close(heredoc_fd);
         }

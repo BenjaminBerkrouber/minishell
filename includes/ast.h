@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 12:10:14 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/02/28 11:56:03 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/08 18:40:54 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,4 +44,4 @@ t_redirection_type ft_type_to_redirection(token_type token);
 void ft_redirectionadd_back(t_redirection **redirection_lst, t_redirection *new);
 t_redirection	*ft_redirection_new(char *filename, t_redirection_type type);
 t_redirection *get_pars_redirection(t_token **token);
-void setup_redirections(t_redirection *redirections);
+int setup_redirections(t_redirection *redirections);

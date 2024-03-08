@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 15:23:12 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/03/08 15:24:24 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/08 22:12:25 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,16 @@
 
 void	add_char_to_result(t_expansion_params *params, char c)
 {
-	(*params->result)[(*params->j)++] = c;
+	char	*tmp;
+	char	*value;
+
+	value = malloc(sizeof(char) * 2);
+	value[0] = c;
+	value[1] = 0;
+	tmp = (*params->result);
+	(*params->result) = ft_strjoin(tmp, value);
+	free(tmp);
+	free(value);
 	(*params->i)++;
 }
 
@@ -76,14 +85,14 @@ char	*quote_value_if_needed(const char *value)
 void	expand_exit_status(t_expansion_params *params)
 {
 	char	*exit_status_str;
-	char	*value;
+	char	*tmp;
 
 	exit_status_str = ft_itoa(g_last_exit_status);
 	if (!exit_status_str)
 		return ;
-	value = exit_status_str;
-	while (*value)
-		(*params->result)[(*params->j)++] = *value++;
+	tmp = (*params->result);
+	(*params->result) = ft_strjoin(tmp, exit_status_str);
+	free(tmp);
 	free(exit_status_str);
 	*params->i += 2;
 }

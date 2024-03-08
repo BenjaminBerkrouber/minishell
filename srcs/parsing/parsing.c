@@ -6,12 +6,22 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 17:40:54 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/03/08 17:43:36 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/08 22:50:58 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+/**
+ * Ajoute un mot à la liste de chaînes splittées, en gérant les guillemets pour
+ * considérer les séquences entre guillemets comme un seul mot.
+ *
+ * @param input			Pointeur vers la chaîne d'entrée actuellement analysée.
+ * @param split_input	Adresse de la liste de chaînes splittées à 
+ * 							laquelle ajouter le mot.
+ * @param i				Index dans la liste de chaînes où 
+ * 							ajouter le nouveau mot.
+ */
 void	add_word(char **input, char ***split_input, int *i)
 {
 	int		j;
@@ -41,6 +51,16 @@ void	add_word(char **input, char ***split_input, int *i)
 	}
 }
 
+/**
+ * Ajoute un opérateur de redirection à la liste de chaînes splittées, gérant
+ * les opérateurs simples et doubles comme "<", ">", ">>", et "<<".
+ *
+ * @param input			Pointeur vers la chaîne d'entrée actuellement analysée.
+ * @param split_input	Adresse de la liste de chaînes splittées à laquelle 
+ * 							ajouter l'opérateur.
+ * @param i				Index dans la liste de chaînes où ajouter
+ * 							le nouvel opérateur.
+ */
 void	add_redirection_operator(char **input, char ***split_input, int *i)
 {
 	if (**input == '<' || **input == '>')
@@ -60,6 +80,16 @@ void	add_redirection_operator(char **input, char ***split_input, int *i)
 	}
 }
 
+/**
+ * Ajoute un opérateur de pipe ou de logique ET à la liste de chaînes 
+ * splittées, gérant les opérateurs simples et doubles comme "|", "||", et "&&".
+ *
+ * @param input			Pointeur vers la chaîne d'entrée actuellement analysée.
+ * @param split_input	Adresse de la liste de chaînes splittées à 
+ * 							laquelle ajouter l'opérateur.
+ * @param i				Index dans la liste de chaînes où ajouter 
+ * 							le nouvel opérateur.
+ */
 void	add_pipe_or_and_operator(char **input, char ***split_input, int *i)
 {
 	if (**input == '|')
@@ -87,13 +117,20 @@ void	add_pipe_or_and_operator(char **input, char ***split_input, int *i)
 	}
 }
 
+/**
+ * Divise la chaîne d'entrée en une liste de sous-chaînes basée sur des espaces
+ * et des opérateurs de redirection et logiques, tout en gérant les guillemets.
+ *
+ * @param input La chaîne d'entrée à diviser.
+ * @return Un tableau de sous-chaînes résultant de la division de l'entrée.
+ */
 char	**ft_split_input(char *input)
 {
 	char	**split_input;
 	int		i;
 
 	i = 0;
-	split_input = malloc(sizeof(char *) * 100);
+	split_input = malloc(sizeof(char *) * (ft_strlen(input) * 2));
 	if (!split_input)
 		return (NULL);
 	while (*input)
@@ -108,6 +145,15 @@ char	**ft_split_input(char *input)
 	return (split_input);
 }
 
+/**
+ * Analyse la chaîne d'entrée, étend les variables d'environnement,
+ * divise en sous-chaînes, et génère une liste de tokens représentant
+ * les éléments de commande.
+ *
+ * @param input		La chaîne d'entrée contenant la commande à analyser.
+ * 
+ * @return La liste de tokens générée à partir de la chaîne d'entrée.
+ */
 t_token	*lexer(char *input)
 {
 	t_token	*token_list;

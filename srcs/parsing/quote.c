@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 17:34:28 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/03/08 17:38:00 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/08 22:20:42 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,10 +95,7 @@ char	*clean_quotes_from_token_value(const char *value)
 	if (!temp_str)
 		return (NULL);
 	while (value[i] != '\0')
-	{
-		handle_char(value[i], temp_str, &temp_len, &current_quote);
-		i++;
-	}
+		handle_char(value[i++], temp_str, &temp_len, &current_quote);
 	temp_str[temp_len] = '\0';
 	cleaned_value = malloc(temp_len + 1);
 	if (!cleaned_value)

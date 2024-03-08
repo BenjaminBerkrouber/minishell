@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 08:04:21 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/03/08 14:26:20 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/09 00:30:33 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int main(int argc, char *argv[], char **envp)
         }
 
         // printf("\n==================TOKENS==================\n\n");
-        print_tokens(tokens);
+        // print_tokens(tokens);
 
         ast = build_ast(&tokens);
         // printf("\n===================AST===================\n\n");
