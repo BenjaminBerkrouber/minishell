@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/16 02:45:18 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/03/08 23:19:21 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/12 12:20:57 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ extern int g_last_exit_status;
 # include <limits.h>
 # include <sys/stat.h>
 # include <sys/wait.h>
+# include <signal.h>
 
 typedef enum {
     CMD,

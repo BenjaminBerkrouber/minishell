@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/27 20:53:14 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/03/08 19:26:11 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/12 16:41:06 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,7 @@ int handle_heredoc(char *delimiter, char *filename)
     int fd;
     int tmp_fd;
     char *line = NULL;
-    size_t len = 0;
-    ssize_t read;
+    size_t read;
 
     fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
     if (fd == -1)
@@ -55,14 +54,16 @@ int handle_heredoc(char *delimiter, char *filename)
         perror("Error: Failed to create temporary file for heredoc");
         exit(EXIT_FAILURE);
     }
-    
-    read = getline(&line, &len, stdin);
-    while ((read != -1))
+    line = gnl(0);
+    read = ft_strlen(line);
+    while (line)
     {
         if (strncmp(line, delimiter, (ft_strlen(line) - 1)) == 0)
             break ;
         write(fd, line, read);
-        read = getline(&line, &len, stdin);
+        free(line);
+        line = gnl(0);
+        read = ft_strlen(line);
     }
     free(line);
     close(fd);

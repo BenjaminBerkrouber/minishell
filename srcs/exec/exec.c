@@ -6,7 +6,7 @@
 /*   By: bberkrou <bberkrou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/26 17:52:08 by bberkrou          #+#    #+#             */
-/*   Updated: 2024/03/09 00:42:55 by bberkrou         ###   ########.fr       */
+/*   Updated: 2024/03/09 01:05:24 by bberkrou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,11 @@ char **get_args(t_token *token)
 
 static int exec_command(t_ast_node *root, int in_fd, int *pipe_fds, char **envp)
 {
-    pid_t pid;
-    char *path;
-    char **args;
-    int status_fd;
-    t_ast_node *node;
+    pid_t       pid;
+    char        *path;
+    char        **args;
+    int         status_fd;
+    t_ast_node  *node;
 
     if (root->left)
         node = root->left;
@@ -147,8 +147,6 @@ void exec_pipeline(t_ast_node *node, char **envp, int fd_in)
 
 void execute_ast(t_ast_node *root, char **envp)
 {
-    (void)envp;
-    (void)root;
     pre_process_heredocs(root);
     exec_pipeline(root, envp, STDIN_FILENO);    
 }

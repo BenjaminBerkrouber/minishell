@@ -1,7 +1,33 @@
 Attention
 
-<<a -> valgrind
 
-ls | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat
+chmod 000 directory
+./ => is a directory
+$PWD => is a directory 
+lol => not found command
+./lol => is a directory
 
-ulimit -n 30; ./minishell
+permission refuser
+
+
+Test  12: ✅⚠️  echo <"./test_files/infile_big" | cat <"./test_files/infile" 
+mini error = ( Broken pipe)
+bash error = ()
+
+Test  13: ✅ echo <"./test_files/infile_big" | cat "./test_files/infile" 
+Test  14: ✅⚠️  echo <"./test_files/infile_big" | echo <"./test_files/infile" 
+mini error = ( Broken pipe)
+bash error = ()
+
+Test  72: ✅⚠️  echo hi | echo bye >>./test_files/invalid_permission 
+mini error = ( Permission denied Broken pipe)
+bash error = ( Permission denied)
+
+NORM ET VALGRIND EXEC
+
+COMMENTAIRE AST PARSING
+
+./minishell | ./minishell 
+
+
+vat <<a (leak)
